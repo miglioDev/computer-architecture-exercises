@@ -8,13 +8,11 @@ Determine the **maximum decimal value** that can be represented using:
 
 ### Solution
 For an **unsigned** representation with `n` bits, the maximum value is obtained when all bits are set to 1:
-\[
-\text{max} = 2^n - 1
-\]
+  max = 2^n - 1
 
-- (A) \(2^5 - 1 = 31\)
-- (B) \(2^{10} - 1 = 1023\)
-- (C) \(2^{16} - 1 = 65535\)
+- (A) 2^5 - 1 = 31
+- (B) 2^10 - 1 = 1023
+- (C) 2^16 - 1 = 65535
 
 ---
 
@@ -25,39 +23,52 @@ Convert the following **binary numbers to decimal**:
 - 11001101.101  
 
 ### Solution
-When converting from binary to decimal, we start **from the rightmost bit**, which has weight \(2^0\), then move left with increasing powers of two (\(2^1, 2^2, \dots\)).
+## Binary to Decimal Conversion
 
-- \(1011010_2 = 1·2^6 + 0·2^5 + 1·2^4 + 1·2^3 + 0·2^2 + 1·2^1 + 0·2^0\)  
-  \[
-  = 64 + 16 + 8 + 2 = 90
-  \]
+When converting from binary to decimal, we start **from the rightmost bit**, which has weight `2^0`,
+then move left with increasing powers of two (`2^1`, `2^2`, ...).
 
-- \(11100011_2 = 1·2^7 + 1·2^6 + 1·2^5 + 0·2^4 + 0·2^3 + 0·2^2 + 1·2^1 + 1·2^0\)  
-  \[
-  = 128 + 64 + 32 + 2 + 1 = 227
-  \]
+### Example 1
+
+    1011010₂
+    = 1·2^6 + 0·2^5 + 1·2^4 + 1·2^3 + 0·2^2 + 1·2^1 + 0·2^0
+    = 64 + 16 + 8 + 2
+    = 90
+
+### Example 2
+
+    11100011₂
+    = 1·2^7 + 1·2^6 + 1·2^5 + 0·2^4 + 0·2^3 + 0·2^2 + 1·2^1 + 1·2^0
+    = 128 + 64 + 32 + 2 + 1
+    = 227
+
+---
+
+## Binary Fractions
 
 For the **fractional part**, digits to the right of the binary point have **negative powers of two**:
-\[
-2^{-1}, 2^{-2}, 2^{-3}, \dots
-\]
 
-- \(11001101.101_2\)
+    2^-1, 2^-2, 2^-3, ...
 
-Integer part:
-\[
-11001101_2 = 128 + 64 + 8 + 4 + 1 = 205
-\]
+### Example
 
-Fractional part:
-\[
-.101_2 = 1·2^{-1} + 0·2^{-2} + 1·2^{-3} = \frac{1}{2} + \frac{1}{8}
-\]
+    11001101.101₂
 
-Final result:
-\[
-11001101.101_2 = 205.625
-\]
+**Integer part**
+
+    11001101₂
+    = 128 + 64 + 8 + 4 + 1
+    = 205
+
+**Fractional part**
+
+    .101₂
+    = 1·2^-1 + 0·2^-2 + 1·2^-3
+    = 1/2 + 1/8
+
+**Final result**
+
+    11001101.101₂ = 205.625
 
 ---
 
@@ -69,13 +80,13 @@ Calculate the **total number of bits** in a memory that contains:
 
 ### Solution
 In computer architecture:
-- \(1K = 2^{10}\)
-- \(1M = 2^{20}\)
-- \(1G = 2^{30}\)
+    1 K = 2^10
+    1 M = 2^20
+    1 G = 2^30
 
-- (A) \(64 \times 2^{10} = 65\,536\) bits  
-- (B) \(128 \times 2^{20} = 134\,217\,728\) bits  
-- (C) \(4 \times 2^{30} = 4\,294\,967\,296\) bits  
+- (A) 64 × 2^10 = 65,536 bits
+- (B) 128 × 2^20 = 134,217,728 bits
+- (C) 4 × 2^30 = 4,294,967,296 bits
 
 ---
 
@@ -88,49 +99,32 @@ Convert the following **decimal numbers to binary**:
 ### Solution
 To convert an **integer** from decimal to binary, repeatedly subtract the **largest power of 2** less than or equal to the number.
 
-- \(2024_{10} = 11111101000_2\)
+-    2024₁₀ = 11111101000₂
 
-For \(1492_{10}\) :
-\[
+For 1492₁₀ :
 1492 = 1024 + 256 + 128 + 64 + 16 + 4
-\]
-\[
-1492_{10} = 10111010100_2
-\]
+    1492₁₀ = 10111010100₂
 
 For the fractional number:
 
 Integer part:
-\[
-1984_{10} = 1024 + 512 + 256 + 128 + 64
-\]
-\[
-1984_{10} = 11111000000_2
-\]
+    1984₁₀ = 1024 + 512 + 256 + 128 + 64
+    1984₁₀ = 11111000000₂
 
 Fractional part:  
 To convert fractions, repeatedly **multiply by the new base (2)**.  
 Each time the result is ≥ 1, write `1` and subtract 1; otherwise write `0`.  
 Stop when the fractional part becomes zero.
 
-\[
-0.625 \times 2 = 1.25 \rightarrow 1
-\]
-\[
-0.25 \times 2 = 0.5 \rightarrow 0
-\]
-\[
-0.5 \times 2 = 1.0 \rightarrow 1
-\]
+    0.625 × 2 = 1.25 → 1
+    0.25  × 2 = 0.5  → 0
+    0.5   × 2 = 1.0  → 1
 
-\[
-0.625_{10} = 0.101_2
-\]
+    0.625₁₀ = 0.101₂
 
 Final result:
-\[
-1984.625_{10} = 11111000000.101_2
-\]
+
+    1984.625₁₀ = 11111000000.101₂
 
 ---
 
@@ -146,38 +140,32 @@ Determine **which ones have the same decimal value**:
 ### Solution
 Each digit is multiplied by the corresponding **power of the base**, starting from the rightmost digit with power \(0\).
 
-- \((10221)_3\)
-\[
-= 1·3^4 + 0·3^3 + 2·3^2 + 2·3^1 + 1·3^0 = 106
-\]
+    (10221)₃
+    = 1·3^4 + 0·3^3 + 2·3^2 + 2·3^1 + 1·3^0
+    = 106
 
-- \((2313)_4\)
-\[
-= 2·4^3 + 3·4^2 + 1·4^1 + 3·4^0 = 183
-\]
+    (2313)₄
+    = 2·4^3 + 3·4^2 + 1·4^1 + 3·4^0
+    = 183
 
-- \((1441)_5\)
-\[
-= 1·5^3 + 4·5^2 + 4·5^1 + 1·5^0 = 246
-\]
+    (1441)₅
+    = 1·5^3 + 4·5^2 + 4·5^1 + 1·5^0
+    = 246
 
-- \((3B4)_{12}\)  
+
+  (3B4)₁₂
 Here `B` represents the digit **11** 0–9, A (=10), B (=11):
-\[
-= 3·12^2 + 11·12^1 + 4·12^0
-\]
-\[
-= 432 + 132 + 4 = 568
-\]
 
-- \((2A9)_{11}\)  
+    = 3·12^2 + 11·12^1 + 4·12^0
+    = 432 + 132 + 4
+    = 568
+
+
+    (2A9)₁₁
 Here `A` represents the digit **10**:
-\[
-= 2·11^2 + 10·11^1 + 9·11^0
-\]
-\[
-= 242 + 110 + 9 = 361
-\]
+    = 2·11^2 + 10·11^1 + 9·11^0
+    = 242 + 110 + 9
+    = 361
 
 ### Result
 **None of the given numbers have the same decimal value.**
@@ -188,9 +176,7 @@ Here `A` represents the digit **10**:
 
 Perform the following conversion using base 2 as an intermediate base:  
 
-\[
-(310.2)_4 \;\rightarrow\; ?_8
-\]
+    (310.2)₄ → ?₈
 
 ---
 
@@ -209,19 +195,16 @@ Each digit in base 4 can be converted to **2 bits** in binary:
 - Fractional part: .2₄ → 2 → 10 → **.10₂**   
 
 **Result in binary:**  
-\[
-(310.2)_4 = 110100.10_2
-\]
+
+    (310.2)₄ = 110100.10₂
 
 ---
 
 ## Step 2: Convert Base 2 → Base 8
 
-because:
+In base 8, each digit corresponds to **3 binary bits**, because:
 
-\[
-8 = 2^3
-\]
+    8 = 2^3
 
 So, to convert from binary to octal:
 
