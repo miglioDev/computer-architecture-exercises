@@ -1,4 +1,4 @@
-Exercise 1:
+# Exercise 1:
 Given a Boolean function, draw the equivalent minimum circuit:
 
 ## Given Function
@@ -53,9 +53,7 @@ For all input combinations where **C = 1**, the output **F = 1**, regardless of 
 
 ## Minimal Boolean Expression
 
-\[
 F = C
-\]
 
 ---
 ## Minimal Circuit
@@ -132,35 +130,39 @@ F = (A̅ · B̅ · C) + (B · C̅)
 ### How I obtained this expression
 
 1. **Start from the truth table**  
-   I started from the truth table considering the values for which the output was 1 (corresponding to minterms 1, 2, and 6).
-   - \(A B C = 001\)
-   - \(A B C = 110\)
+   I started from the truth table considering the values for which the output was 1
+   (corresponding to minterms 1, 2, and 6).
+
+   - A B C = 001
+   - A B C = 110
+
 2. **Write the Sum of Products (SOP)**  
-   Each row where \(F = 1\) becomes a minterm:
-   \[
-   F = \overline{A}\,\overline{B}\,C + \overline{A}\,B\,\overline{C} + A\,B\,\overline{C}
-   \]
+   Each row where F = 1 becomes a minterm:
+
+   F = (!A · !B · C) + (!A · B · !C) + (A · B · !C)
 
 3. **Factor common terms**  
    Group the last two terms:
-   \[
-   \overline{A}\,B\,\overline{C} + A\,B\,\overline{C}
-   = B\,\overline{C}(\overline{A} + A)
-   \]
+
+   (!A · B · !C) + (A · B · !C)  
+   = B · !C · (!A + A)
 
 4. **Apply Boolean identities**  
-   We know that:  \((\overline{A} + A) = 1\):
-   \[
-   B\,\overline{C} \cdot 1 = B\,\overline{C}
-   \]
-   (if you don't notice it right away, try making a truth table for this piece only)
+   We know that:
+
+   (!A + A) = 1  
+
+   Therefore:
+
+   B · !C · 1 = B · !C  
+
+   (If it is not immediately obvious, try building a truth table for this part only.)
 
 5. **Final minimal form**  
    Each combination where F = 1 is translated into a product term.
    The final Boolean function is obtained by OR-ing all these product terms and then simplifying.
-   \[
-   \boxed{F = (\overline{A} \cdot \overline{B} \cdot C) + (B \cdot \overline{C})}
-   \]
+
+   **F = (!A · !B · C) + (B · !C)**
 ---
 ## Minimal Circuit
 ![Minimal Circuit](images/Screenshot002.png)
