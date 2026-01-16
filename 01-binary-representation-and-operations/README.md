@@ -1,4 +1,4 @@
-# Exercises – Number Systems and Memory Basics (with Solutions)
+# Exercises – binary-representation-and-operations Basics (with Solutions)
 
 ## Exercise 1  
 Determine the **maximum decimal value** that can be represented using:
@@ -360,7 +360,203 @@ Shift left by one position:
 (decimal check: 5 × 2 = 10 )
 
 ---
+## Exercise 6: 6-bit Two's Complement Addition
+
+### Problem Statement
+
+Consider the following two numbers, represented in **6-bit two's complement**:
+
+m1 = 100110
+m2 = 001011
+
+Tasks:
+
+1. Determine whether the signs of the two numbers are **concordant** (same) or **discordant** (different).  
+2. Calculate the sum of the two numbers (also represented in 6-bit two's complement) and discuss whether an **overflow** occurs.
+
+---
+
+### Solution
+
+#### Step 1: Determine the sign of each number
+
+- `m1 = 100110` → Most Significant Bit (MSB) = `1` → Negative  
+- `m2 = 001011` → MSB = `0` → Positive  
+
+**Conclusion:** The signs are **discordant**.
+
+---
+
+#### Step 2: Binary addition
+
+Add the two numbers **bit by bit**, including carries:
 
 
+100110  (m1)
 
+* 001011  (m2)
+
+---
+
+110001  (6-bit sum)
+
+
+Since the numbers have **discordant signs**, there is **no risk of overflow** in two's complement addition.
+
+---
+
+#### Step 3: Interpret the result
+
+- The sum in 6-bit two's complement is `110001`.  
+- MSB = `1` → Negative number.  
+
+**Final Result:** `110001` (represents `-15` in decimal)  
+**Overflow:** No  
+
+---
+
+**Key Notes:**
+
+- In two's complement, **overflow occurs only when adding two numbers with the same sign** that produce a result with a different sign.  
+- When adding numbers with **discordant signs**, overflow cannot occur.  
+- The result is always represented in the same bit width, no extra manipulation is required.
+
+## Exercise 7: Number Base Conversion and IEEE 754 Representation
+
+### Problem Statement
+
+Consider the following fractional number in base 10:
+
+**4.3125**
+
+1. Find the representation of this number in **base 2**.
+2. Convert the obtained binary number into **base 16**.
+3. Represent the following binary number in **IEEE 754 single-precision (32-bit) floating-point format**, explaining all steps:
+
+**-110.11011101₂**
+
+---
+
+### Solution
+
+#### 1. Conversion of 4.3125 from Base 10 to Base 2
+
+We separate the number into its integer and fractional parts.
+
+#### Integer Part
+
+4 (base 10) = 100 (base 2)
+
+#### Fractional Part
+
+We repeatedly multiply the fractional part by 2:
+
+| Step | Value × 2 | Integer Part |
+|------|-----------|--------------|
+| 0.3125 | 0.625 | 0 |
+| 0.625 | 1.25 | 1 |
+| 0.25 | 0.5 | 0 |
+| 0.5 | 1.0 | 1 |
+
+Reading the integer parts from top to bottom:
+
+0.3125 (base 10) = 0.0101 (base 2)
+
+#### Final Binary Representation
+
+4.3125 (base 10) = 100.0101 (base 2)
+
+---
+
+### 2. Conversion from Base 2 to Base 16
+
+We group the binary digits in groups of four, starting from the binary point:
+
+100.0101 (base 2) = 0100.0101 (base 2)
+
+| Binary | Hexadecimal |
+|--------|-------------|
+| 0100 | 4 |
+| 0101 | 5 |
+
+4.3125 (base 10) = 4.5 (base 16)
+
+---
+
+### 3. IEEE 754 Single-Precision Representation
+
+Given binary number:
+
+-110.11011101 (base 2)
+
+#### 3.1 Sign Bit
+
+The number is negative:
+
+Sign bit S = 1
+
+---
+
+#### 3.2 Normalization
+
+We normalize the number to the form:
+
+1.mantissa × 2^e
+
+-110.11011101 (base 2) = -1.1011011101 (base 2) × 2^2
+
+So the real exponent is:
+
+e = 2
+
+---
+
+#### 3.3 Exponent with Bias
+
+For IEEE 754 single precision:
+
+Bias = 127
+
+Stored exponent:
+
+E = e + bias = 2 + 127 = 129
+
+129 (base 10) = 10000001 (base 2)
+
+---
+
+#### 3.4 Mantissa
+
+The mantissa consists of the bits following the leading 1:
+
+1011011101
+
+We pad with zeros to reach 23 bits:
+
+10110111010000000000000
+
+---
+
+### 4. Final IEEE 754 Representation (32 bits)
+
+| Field | Bits |
+|-------|------|
+| Sign | 1 |
+| Exponent | 10000001 |
+| Mantissa | 10110111010000000000000 |
+
+Final 32-bit binary representation:
+
+11000000110110111010000000000000
+
+---
+
+## Final Results
+
+- 4.3125 (base 10) = 100.0101 (base 2) = 4.5 (base 16)
+- IEEE 754 single-precision representation:
+
+11000000110110111010000000000000
+
+---
 
