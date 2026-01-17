@@ -370,6 +370,228 @@ Where:
 - `e = −126`
 
 ---
+# Exercise 3 – Character Encoding UTF-8, UCS-2 and IEEE 754 Interpretation
+
+## Problem Statement
+
+Consider the two-letter word **“Gò”**, where the second character is the lowercase letter **“ò”** (Latin small letter o with grave accent).
+
+Answer the following questions:
+
+1. What is the UTF-8 encoding of this word?
+2. What is the UCS-2 encoding of the same word (using 16-bit Unicode codes)?  
+   Express the result as a sequence of hexadecimal digits.
+3. Take the sequence of **8 hexadecimal digits** obtained in the previous point and interpret it as a **single-precision IEEE 754 floating-point number (32 bits)**.  
+   State whether the number is **normalized** or **denormalized**, and justify your answer.
+
+---
+
+## Solution
+
+The word is composed of two characters:
+
+1. `G`
+2. `ò`
+
+---
+
+## 1. UTF-8 Encoding
+
+### Character `G`
+
+- Unicode code point: U+0047
+- Range: U+0000 – U+007F  
+  → encoded using **1 byte** in UTF-8
+
+Binary representation:
+
+01000111
+
+
+Hexadecimal representation:
+
+47
+
+---
+
+### Character `ò`
+
+- Unicode code point: U+00F2
+- Range: U+0080 – U+07FF  
+  → encoded using **2 bytes** in UTF-8
+
+Binary representation of the Unicode code point:
+
+11110010
+
+UTF-8 two-byte format:
+
+110xxxxx 10xxxxxx
+
+Filling in the bits:
+
+11000011 10110010
+
+Hexadecimal representation:
+
+C3 B2
+
+---
+
+### Final UTF-8 Encoding of the Word
+
+In hexadecimal:
+
+47 C3 B2
+
+---
+
+## 2. UCS-2 Encoding (16-bit Unicode)
+
+In UCS-2, each character is encoded using exactly **16 bits (2 bytes)**.
+
+### Character `G`
+
+- Unicode: U+0047
+- 16-bit representation:
+
+0047
+
+---
+
+### Character `ò`
+
+- Unicode: U+00F2
+- 16-bit representation:
+
+00F2
+
+---
+
+### Final UCS-2 Encoding of the Word
+
+As a sequence of hexadecimal digits:
+
+
+00 47 00 F2
+
+or, without spaces:
+
+
+004700F2
+
+
+---
+
+## 3. Interpretation as IEEE 754 Single Precision Floating-Point
+
+We now interpret the 8 hexadecimal digits:
+
+
+004700F2
+
+as a **32-bit IEEE 754 single-precision floating-point number**.
+
+---
+
+### Conversion to Binary
+
+Each hexadecimal digit corresponds to 4 bits:
+
+
+0    0    4    7    0    0    F    2
+0000 0000 0100 0111 0000 0000 1111 0010
+
+
+Complete 32-bit binary sequence:
+
+00000000010001110000000011110010
+
+---
+
+### IEEE 754 Field Separation
+
+Single-precision format:
+- 1 bit: sign (S)
+- 8 bits: exponent (E)
+- 23 bits: mantissa (M)
+
+Splitting the bits:
+
+| S | Exponent  | Mantissa                 |
+|---|-----------|--------------------------|
+| 0 | 00000000  | 1000111000000011110010   |
+
+---
+
+### Sign Bit
+
+- S = 0  
+  → the number is **positive**
+
+---
+
+### Exponent Analysis
+
+Exponent bits:
+
+00000000
+
+- Exponent value = 0
+
+According to IEEE 754:
+- Exponent = 0 and mantissa ≠ 0  
+  → the number is **denormalized (subnormal)**
+
+---
+
+### Mantissa Interpretation
+
+For denormalized numbers:
+- There is **no implicit leading 1**
+- The significand has the form:
+
+0.mantissa
+
+
+Thus, the mantissa represents:
+
+0.1000111000000011110010₂
+
+The exponent used is:
+```
+
+1 − bias = 1 − 127 = −126
+
+```
+
+---
+
+## Final Conclusion
+
+- The UTF-8 encoding of the word **“Go”** (with `ò`) is:
+
+47 C3 B2
+
+
+- The UCS-2 encoding (16-bit Unicode, hexadecimal) is:
+
+00 47 00 F2
+
+
+- Interpreting `004700F2` as a 32-bit IEEE 754 floating-point number:
+  - the sign is positive
+  - the exponent is zero
+  - the mantissa is non-zero
+
+Therefore, the number is **denormalized**.
+
+---
+
+## Key Observation
+
+A floating-point number in IEEE 754 single precision is **denormalized** when the exponent field is all zeros and the mantissa is not zero.  
+Denormalized numbers are used to represent values very close to zero and allow for gradual underflow.
 
 
 
