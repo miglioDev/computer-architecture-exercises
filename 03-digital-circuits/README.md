@@ -180,10 +180,9 @@ f(x, y, z, w)
 The function is provided through its truth table (implicitly represented via a Karnaugh map).
 
 **Tasks:**
-1. Represent the function using a Karnaugh map.
-2. Simplify the function using the **Sum of Products (SOP)** method.
-3. Obtain the minimal Boolean expression.
-4. Implement the simplified function as a logic circuit.
+1. Simplify the function using the **Sum of Products (SOP)** method.
+2. Obtain the minimal Boolean expression.
+3. Implement the simplified function as a logic circuit.
 
 ---
 
