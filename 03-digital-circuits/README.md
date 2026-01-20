@@ -168,3 +168,120 @@ F = (A̅ · B̅ · C) + (B · C̅)
 ![Minimal Circuit](images/Screenshot002.png)
 
 *Figure 1: Minimal logic circuit implementation.*
+
+# Exercise 3 – Boolean Function Simplification (SOP using Karnaugh Map)
+
+## Problem Statement
+
+Given a Boolean function of four variables:
+
+f(x, y, z, w)
+
+The function is provided through its truth table (implicitly represented via a Karnaugh map).
+
+**Tasks:**
+1. Represent the function using a Karnaugh map.
+2. Simplify the function using the **Sum of Products (SOP)** method.
+3. Obtain the minimal Boolean expression.
+4. Implement the simplified function as a logic circuit.
+
+---
+
+## Given Data
+
+### Karnaugh Map Layout
+
+- Rows: `xy = 00, 01, 11, 10` (Gray code)
+- Columns: `zw = 00, 01, 11, 10` (Gray code)
+
+### Karnaugh Map Values
+
+```
+          zw
+        00  01  11  10
+      ┌────────────────
+xy 00 │  0   1   1   0
+   01 │  0   1   1   0
+   11 │  1   1   0   0
+   10 │  1   1   0   0
+
+```
+
+---
+
+## Solution Strategy
+
+Since the required form is **SOP (Sum of Products)**:
+
+- Group **1s** in the Karnaugh map.
+- Each group produces a **product term (AND)**.
+- The final function is the **OR** of all product terms.
+- A variable:
+  - Constant **1** → appears uncomplemented
+  - Constant **0** → appears complemented
+  - Changing → eliminated
+
+---
+
+## Karnaugh Grouping
+
+### Group 1 (Upper 2×2 block)
+
+Cells:
+- `xy = 00, 01`
+- `zw = 01, 11`
+
+Constant variables:
+- `x = 0` → ¬x
+- `w = 1` → w
+
+Changing variables:
+- y, z → eliminated
+
+**Product term:**
+```
+¬x · w
+```
+
+---
+
+### Group 2 (Lower 2×2 block)
+
+Cells:
+- `xy = 11, 10`
+- `zw = 00, 01`
+
+Constant variables:
+- `x = 1` → x
+- `z = 0` → ¬z
+
+Changing variables:
+- y, w → eliminated
+
+**Product term:**
+```
+x · ¬z
+```
+
+---
+
+## Final Simplified SOP Expression
+
+```
+f(x, y, z, w) = (¬x · w) + (x · ¬z)
+```
+
+This is the minimal SOP form obtained from the Karnaugh map.
+
+---
+
+## Verification
+
+The simplified function was implemented in **Logisim**, and the generated truth table matches the Karnaugh map values exactly.
+
+---
+
+## Circuit Implementation
+
+### Final Logic Circuit
+![Minimal Circuit](images/Screenshot003.png)
