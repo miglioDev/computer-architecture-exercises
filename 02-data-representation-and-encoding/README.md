@@ -601,7 +601,7 @@ Denormalized numbers are used to represent values very close to zero and allow f
 1. Write the Unicode code point in hexadecimal (16 bits)
 2. Write the binary representation (16 bits)
 3. Identify:
-   - Most Significant Byte (MSB) (High byte = byte più a sinistra)
+   - Most Significant Byte (MSB)
    - Least Significant Byte (LSB)
 4. Show byte order in memory:
    - a) Big Endian
@@ -612,7 +612,7 @@ Denormalized numbers are used to represent values very close to zero and allow f
 1. Hexadecimal: 0x03A9 the prefix 0x indicates that what follows is a hexadecimal code.
 2. Binary: 0000 0011 1010 1001
 3. Bytes: 
-   - MSB (High byte = byte più a sinistra): 0x03
+   - MSB (High byte = left most byte): 0x03
    - LSB (Low byte): 0xA9
 4. Memory order:
    - Big Endian: 03 A9 (most significant byte first)
