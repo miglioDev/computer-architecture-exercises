@@ -593,6 +593,51 @@ Therefore, the number is **denormalized**.
 A floating-point number in IEEE 754 single precision is **denormalized** when the exponent field is all zeros and the mantissa is not zero.  
 Denormalized numbers are used to represent values very close to zero and allow for gradual underflow.
 
+# Exercise 4: UCS-2 and Endianness
+
+## Exercise 4a: U+03A9 (Ω – Greek Omega)
+
+**Request:**
+1. Write the Unicode code point in hexadecimal (16 bits)
+2. Write the binary representation (16 bits)
+3. Identify:
+   - Most Significant Byte (MSB) (High byte = byte più a sinistra)
+   - Least Significant Byte (LSB)
+4. Show byte order in memory:
+   - a) Big Endian
+   - b) Little Endian
+5. Does the Unicode value change?
+
+**Solution:**
+1. Hexadecimal: 0x03A9 the prefix 0x indicates that what follows is a hexadecimal code.
+2. Binary: 0000 0011 1010 1001
+3. Bytes: 
+   - MSB (High byte = byte più a sinistra): 0x03
+   - LSB (Low byte): 0xA9
+4. Memory order:
+   - Big Endian: 03 A9 (most significant byte first)
+   - Little Endian: A9 03 (least significant byte first)
+5. Unicode value remains the same 
+   - Endianness only affects byte order in memory, not the character value
+
+---
+
+## Exercise 4b: U+20AC (€ – Euro Sign)
+
+**Request:**
+ the same as before (1,2,3,4,5)
+
+**Solution:**
+1. Hexadecimal: 0x20AC
+2. Binary: 0010 0000 1010 1100
+3. Bytes:
+   - MSB (High byte = left most ): 0x20
+   - LSB (Low byte): 0xAC
+4. Memory order:
+   - Big Endian: 20 AC
+   - Little Endian: AC 20
+5. Unicode value remains the same  
+   - Endianness changes only byte order in memory, not the code point value
 
 
 
