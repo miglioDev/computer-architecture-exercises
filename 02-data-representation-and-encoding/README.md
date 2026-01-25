@@ -640,5 +640,204 @@ Denormalized numbers are used to represent values very close to zero and allow f
    - Endianness changes only byte order in memory, not the code point value
 
 
+# Exercise 5 – Character Encoding Identification
+
+## Exercise description
+
+The Danish word **MØDE** (meaning *meeting*) is written using **uppercase letters only**.
+
+Three different encodings of the word are given below.  
+Each encoding is expressed in **hexadecimal notation**, where **each pair of hex digits corresponds to one byte**.
+
+One encoding is:
+- **UTF-8**
+- one is **Extended ASCII (Latin-1 / ISO-8859-1)**
+- one is **UCS-2** (2-byte Unicode encoding for the Basic Multilingual Plane)
+
+### Task
+
+Identify which encoding is which and explain **how they can be recognized**, paying special attention to **UTF-8 byte prefixes**.
+
+---
+
+## Given encodings
+
+### Encoding (a)
+```
+
+4D C3 98 44 45
+
+```
+
+### Encoding (b)
+```
+
+00 4D 00 D8 00 44 00 45
+
+```
+
+### Encoding (c)
+```
+
+4D D8 44 45
+
+```
+
+---
+
+## Unicode code points of the characters
+
+| Character | Unicode |
+|---------|---------|
+| M | U+004D |
+| Ø | U+00D8 |
+| D | U+0044 |
+| E | U+0045 |
+
+---
+
+## Solution and explanation
+
+---
+
+## Encoding (b) → UCS-2
+
+```
+
+00 4D 00 D8 00 44 00 45
+
+```
+
+### Why this is UCS-2
+
+- Each character is encoded using **exactly 2 bytes**
+- The format is `00 XX` for characters in the ASCII / Latin-1 range
+- This is a direct 16-bit representation of Unicode code points (BMP)
+
+### Decoding
+
+| Bytes | Unicode | Character |
+|------|---------|-----------|
+| 00 4D | U+004D | M |
+| 00 D8 | U+00D8 | Ø |
+| 00 44 | U+0044 | D |
+| 00 45 | U+0045 | E |
+
+**Conclusion:**  
+Encoding (b) is **UCS-2**
+
+---
+
+## Encoding (c) → Extended ASCII (Latin-1)
+
+```
+
+4D D8 44 45
+
+```
+
+### Important clarification
+
+All encodings (ASCII, Latin-1, UTF-8) are made of **8-bit bytes**.  
+What matters is **the value of the byte**, not the fact that it has 8 bits.
+
+### Analysis
+
+- `4D` → M (standard ASCII)
+- `D8` → value > `7F` (127)
+
+Pure ASCII only supports values from `00` to `7F`.  
+In **Latin-1**, the byte `D8` represents the character **Ø**.
+
+### Decoding
+
+| Byte | Character |
+|----|-----------|
+| 4D | M |
+| D8 | Ø |
+| 44 | D |
+| 45 | E |
+
+**Conclusion:**  
+Encoding (c) is **Extended ASCII (Latin-1)**
+
+---
+
+## Encoding (a) → UTF-8
+
+```
+
+4D C3 98 44 45
+
+```
+
+### UTF-8 prefix rules (key concept)
+
+UTF-8 uses **byte prefixes**:
+
+| Prefix | Meaning |
+|------|---------|
+| `0xxxxxxx` | 1-byte ASCII |
+| `110xxxxx` | start of 2-byte sequence |
+| `10xxxxxx` | continuation byte |
+| `1110xxxx` | start of 3-byte sequence |
+
+---
+
+### Byte-by-byte analysis
+
+#### Byte 1: `4D`
+```
+
+4D = 01001101
+
+```
+- Starts with `0`
+- ASCII character → **M**
+
+#### Bytes 2–3: `C3 98`
+
+```
+
+C3 = 11000011  → starts with 110 → first byte of 2-byte UTF-8 sequence
+98 = 10011000  → starts with 10  → continuation byte
+
+```
+
+This matches the UTF-8 pattern:
+
+```
+
+110xxxxx 10xxxxxx
+
+```
+
+These two bytes together encode **Ø (U+00D8)** in UTF-8.
+
+#### Remaining bytes
+
+- `44` → D
+- `45` → E
+
+---
+
+## Final identification
+
+| Encoding | Type |
+|-------|------|
+| (a) `4D C3 98 44 45` | **UTF-8** |
+| (b) `00 4D 00 D8 00 44 00 45` | **UCS-2** |
+| (c) `4D D8 44 45` | **Extended ASCII (Latin-1)** |
+
+---
+
+## Exam-oriented mental checklist
+
+1. **Do you see `00 XX 00 XX` repeatedly?** → UCS-2  
+2. **Do you see bytes starting with `10`?** → UTF-8 is involved  
+3. **UTF-8** → only check **the leading bits (prefix), the remaining bits are just payload
+4. **ASCII** → values **0–127 only** Latin-1 → **1 byte**, includes characters beyond ASCII
+
+---
 
 
