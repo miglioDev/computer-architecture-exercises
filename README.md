@@ -1,11 +1,11 @@
 # Computer Architecture Exercises
 
-This repository contains a collection of exercises and explained notes on core computer architecture topics, created during my first year of Computer Science studies.
+This repository contains a collection of explained exercises on basic computer architecture topics, created during my first semester of Computer Science studies.
 
 ## About
 
-The goal of this repository is to reinforce fundamental concepts by combining exercises with clear, step-by-step explanations.
-It is intended for students studying computer architecture or reviewing its basics through practical examples.
+The goal of this repository is to understand the fundamental concepts of how electronic devices work through exercises with clear explanations.
+This guide is perfect for anyone who’s diving into the world of computer architecture! Whether you're a student or just someone brushing up on the basics, you'll find it helpful.
 
 ## Repository Structure
 
@@ -24,8 +24,8 @@ Each folder contains its own `README.md` with exercises and detailed explanation
 
 ## How to Use
 
-You can follow the sections in order or jump directly to a specific topic.
-Each exercise is accompanied by a solution and reasoning to support learning and revision.
+You can navigate through the exercises using the menu to go directly to topics of interest. 
+Remember, it is better to actively try the exercises rather than just reading how to do them! Each exercise includes a solution and an explanation.
 
 ## Notes
 
