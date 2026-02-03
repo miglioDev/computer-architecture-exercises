@@ -560,3 +560,83 @@ Final 32-bit binary representation:
 
 ---
 
+## Question 8  
+Given an 8-bit binary number, write the general formulas to compute the minimum and maximum representable values for:
+- unsigned integers,
+- sign-and-magnitude representation,
+- two’s complement representation.
+
+Briefly explain why the ranges are different.
+
+## Explanation  
+
+An 8-bit binary number provides 2^8 = 256 distinct bit patterns.  
+The representable range depends on how these patterns are interpreted.
+
+### Unsigned integers  
+All 8 bits represent the magnitude.
+
+- Minimum value:  
+  min = 0
+- Maximum value:  
+  max = 2^8 - 1 = 255
+
+Range: [0, 255]
+
+### Sign and magnitude  
+The most significant bit (MSB) represents the sign (0 = positive, 1 = negative).  
+The remaining 7 bits represent the magnitude.
+
+- Maximum value:  
+  max = +(2^7 - 1) = +127
+- Minimum value:  
+  min = -(2^7 - 1) = -127
+
+Range: [-127, +127]
+
+This representation has two encodings for zero (+0 and -0), wasting one bit pattern.
+
+### Two’s complement  
+The MSB has negative weight (-2^7), while the remaining bits have positive weights.
+
+- Maximum value:  
+  max = 2^7 - 1 = +127
+- Minimum value:  
+  min = -2^7 = -128
+
+Range: [-128, +127]
+
+### Why the ranges differ  
+The ranges differ because the most significant bit is interpreted differently:
+- as a value bit in unsigned representation,
+- as a sign indicator in sign-and-magnitude,
+- as a negative-weight bit in two’s complement.
+
+Two’s complement uses all bit patterns efficiently and allows arithmetic operations to be performed without special cases.
+
+## Question 9:
+Consider the following decimal numbers: -130 and -128.  
+For each number, state whether it can be represented exactly using 8 bits.  
+If it is not representable, write "overflow" and briefly justify why.  
+If it is representable, provide its 8-bit binary representation.  
+
+### Explanation  
+
+The representable range for signed 8-bit integers in two’s complement is:
+- minimum: -128
+- maximum: +127
+
+### Number: -130  
+- Not representable on 8 bits.
+- Reason: -130 is smaller than the minimum value (-128) allowed by 8-bit two’s complement.
+
+Result: **overflow**
+
+### Number: -128  
+- Representable on 8 bits.
+- It corresponds to the minimum value in 8-bit two’s complement.
+- While with sign and magnitute it is not representable **overflow**
+
+Binary representation (8 bits):
+-128 → 10000000
+
