@@ -841,3 +841,135 @@ These two bytes together encode **Ø (U+00D8)** in UTF-8.
 ---
 
 
+# Exercise 6 – Conversion from ASCII to UTF-8 and UCS-2 (16-bit Unicode)
+
+## Question
+The ASCII encoding in hexadecimal is: `4D 65 6E F9`.  
+Derive, **explaining the steps**, the UTF-8 and UCS-2 (16-bit Unicode) encoding, using **Big Endian** and **Little Endian** byte order.
+
+---
+
+## Step 1 – Convert ASCII to binary
+
+| Hex | Binary      | Character |
+|-----|------------|-----------|
+| 4D  | 0100 1101  | M |
+| 65  | 0110 0101  | o |  
+| 6E  | 0110 1110  | ù |
+| F9  | 1111 1001  | q |  
+
+String: **"Moùq"**
+
+---
+
+## Step 2 – Unicode code points
+
+| Character | Unicode | Binary (code point) |
+|-----------|---------|-------------------|
+| M         | U+004D  | 0000 0100 1101    |
+| o         | U+006F  | 0000 0110 1111    |
+| ù         | U+00F9  | 0000 1111 1001    |
+| q         | U+0071  | 0000 0111 0001    |
+
+---
+
+## Step 3 – UTF-8 
+
+UTF-8 encoding depends on the Unicode code point:
+
+- U+0000 – U+007F → **1 byte**
+- U+0080 – U+07FF → **2 bytes**
+- U+0800 – U+FFFF → **3 bytes**
+- U+10000 – U+10FFFF → **4 bytes**
+
+1. **Characters ≤ U+007F** → 1 byte (same as ASCII)  
+2. **Characters ≥ U+0080** → 2 bytes, use the prefix pattern:  
+
+---
+
+## Step 4 – Convert each character to UTF-8 (binary)
+
+### M → U+004D
+
+- ≤ U+007F → 1 byte  
+- Binary: `01001101` → UTF-8 byte: `01001101`  
+- Hex: `4D`
+
+### o → U+006F
+
+- ≤ U+007F → 1 byte  
+- Binary: `01101111` → UTF-8 byte: `01101111`  
+- Hex: `6F`
+
+### ù → U+00F9
+
+- > U+007F → 2 bytes  
+- Code point binary: `0000 1111 1001` → 11 bits: `11111001`  
+- Insert into `110xxxxx 10xxxxxx` pattern:  
+```
+
+11000011 10111001
+
+```
+- Hex: `C3 B9`
+
+### q → U+0071
+
+- ≤ U+007F → 1 byte  
+- Binary: `01110001` → UTF-8 byte: `01110001`  
+- Hex: `71`
+
+---
+
+##  Step 5 – UTF-8 result (binary and hex)
+
+| Character | UTF-8 (binary)     | UTF-8 (hex) |
+|-----------|------------------|-------------|
+| M         | 01001101          | 4D          |
+| o         | 01101111          | 6F          |
+| ù         | 11000011 10111001 | C3 B9       |
+| q         | 01110001          | 71          |
+
+**UTF-8 encoding:**  
+```
+
+01001101 01101111 11000011 10111001 01110001
+4D 6F C3 B9 71
+
+```
+
+---
+
+## Step 6 – UCS-2 (16-bit Unicode)
+
+Each character is **16 bits fixed**, no prefixes.  
+
+### Big Endian (MSB first)
+
+| Character | Binary (16-bit)  | Hex    |
+|-----------|----------------|--------|
+| M         | 0000 0000 0100 1101 | 00 4D |
+| o         | 0000 0000 0110 1111 | 00 6F |
+| ù         | 0000 0000 1111 1001 | 00 F9 |
+| q         | 0000 0000 0111 0001 | 00 71 |
+
+**UCS-2 Big Endian:**  
+```
+
+00 4D 00 6F 00 F9 00 71
+
+```
+
+### Little Endian (LSB first)
+
+| Character | Binary (16-bit)  | Hex    |
+|-----------|----------------|--------|
+| M         | 0100 1101 0000 0000 | 4D 00 |
+| o         | 0110 1111 0000 0000 | 6F 00 |
+| ù         | 1111 1001 0000 0000 | F9 00 |
+| q         | 0111 0001 0000 0000 | 71 00 |
+
+**UCS-2 Little Endian:**  
+```
+
+4D 00 6F 00 F9 00 71 00
