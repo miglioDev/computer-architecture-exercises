@@ -363,5 +363,5 @@ The final circuit implements the same Boolean function using **only NAND gates**
 
 ![NAND Only Circuit](images/Screenshot005.png)
 
----
+
 
