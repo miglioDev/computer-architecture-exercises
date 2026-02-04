@@ -284,3 +284,84 @@ The simplified function was implemented in **Logisim**, and the generated truth 
 
 ### Final Logic Circuit
 ![Minimal Circuit](images/Screenshot003.png)
+
+# Exercise 4 – Karnaugh Map Analysis and NAND Implementation
+
+## Problem Statement
+
+Given the Karnaugh map:
+
+1. Analyze it.
+2. Find the simplified Boolean function.
+3. Draw the simplified logic diagram.
+4. Implement the same function using **only NAND gates**.
+
+---
+
+### Karnaugh Map
+
+The Karnaugh map uses the following layout:
+
+- Variables **A B** on the horizontal axis 
+- Variable **C** on the vertical axis
+
+| C \ AB | 00 | 01 | 11 | 10 |
+|------|----|----|----|----|
+| 0    | 1  | 1  | 0  | 0  |
+| 1    | 1  | 1  | 0  | 1  |
+
+From the map we can see:
+
+- The function is **1 for all cases where A = 0**
+- The function is also **1 when B = 0 and C = 1**
+
+---
+
+### Boolean Function
+
+By grouping the 1s in the Karnaugh map, the simplified Boolean function is:
+
+F = NOT A OR (NOT B AND C)
+
+---
+
+### Simplified Logic Diagram
+
+The simplified logic requires:
+
+- a NOT gate for A
+- a NOT gate for B
+- an AND gate for (NOT B AND C)
+- an OR gate to combine the two terms
+
+![Simplified Logic Diagram](images/Screenshot004.png)
+
+---
+
+### NAND Gate Implementation (Explanation)
+
+The NAND gate is a **universal gate**, meaning that any logic function can be implemented using only NAND gates.
+
+I used the following transformations:
+
+- NOT X (self-connected) here NAND is used as inverter
+  X NAND X
+
+- X AND Y  
+  (X NAND Y) NAND (X NAND Y)
+
+- X OR Y  
+  (X NAND X) NAND (Y NAND Y)
+
+Using these rules, every NOT, AND and OR gate in the simplified logic diagram can be replaced by NAND gates only.
+
+---
+
+### NAND-Only Circuit
+
+The final circuit implements the same Boolean function using **only NAND gates**.
+
+![NAND Only Circuit](images/Screenshot005.png)
+
+---
+
