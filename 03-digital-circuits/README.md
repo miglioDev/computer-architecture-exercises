@@ -363,5 +363,60 @@ The final circuit implements the same Boolean function using **only NAND gates**
 
 ![NAND Only Circuit](images/Screenshot005.png)
 
+# Exercise 6 – Karnaugh Map Simplification (NAND Only)
 
+## Problem statement
+The following Karnaugh map describes a Boolean function with four variables  
+**X, Y, Z, W**.
+
+Starting from the Karnaugh map:
+1. Derive the minimal Boolean function
+2. Implement the circuit using ONLY NAND gates
+
+---
+
+## Given Karnaugh map
+
+Variables **X Y** are on the columns, **Z W** on the rows  
+
+| ZW \ XY | 00 | 01 | 11 | 10 |
+|--------|----|----|----|----|
+| **00** | 0  | 0  | 1  | 0  |
+| **01** | 0  | 0  | 1  | 0  |
+| **11** | 0  | 0  | 1  | 0  |
+| **10** | 1  | 1  | 1  | 1  |
+
+---
+
+## Step 1 – Karnaugh map grouping
+
+From the Karnaugh map we identify two maximal groups:
+
+- **Group 1 (row ZW = 10)**  
+  This row contains four 1s →  
+  Z = 1 and W = 0  
+  → term: **Z·!W**
+
+- **Group 2 (column XY = 11)**  
+  This column contains four 1s →  
+  X = 1 and Y = 1  
+  → term: **X·Y**
+
+---
+
+## Step 2 – Minimal Boolean function
+
+Combining the two groups:
+
+F = Z·!W + X·Y
+
+This is the minimal Sum of Products form.
+
+---
+
+## Step 3 – NAND-only circuit implementation
+
+![NAND Only Circuit](images/Screenshot006.png)
+
+---
 
