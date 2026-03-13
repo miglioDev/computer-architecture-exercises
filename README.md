@@ -19,6 +19,9 @@ The repository is organized by topic:
 
 - `03-digital-circuits`  
   Boolean functions, truth tables, and minimal logic circuit implementations.
+  
+- `04-assembly-and-riscv`  
+  Work in progress: simple assembly programming exercises and questions about RISC-V
 
 Each folder contains its own `README.md` with exercises and detailed explanations.
 
