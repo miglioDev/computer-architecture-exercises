@@ -22,20 +22,19 @@ Convert the following **binary numbers to decimal**:
 - 11100011  
 - 11001101.101  
 
-### Solution
-## Binary to Decimal Conversion
+### Binary to Decimal Conversion
 
 When converting from binary to decimal, we start **from the rightmost bit**, which has weight `2^0`,
 then move left with increasing powers of two (`2^1`, `2^2`, ...).
 
-### Example 1
+**Example 1**
 
     1011010₂
     = 1·2^6 + 0·2^5 + 1·2^4 + 1·2^3 + 0·2^2 + 1·2^1 + 0·2^0
     = 64 + 16 + 8 + 2
     = 90
 
-### Example 2
+**Example 2**
 
     11100011₂
     = 1·2^7 + 1·2^6 + 1·2^5 + 0·2^4 + 0·2^3 + 0·2^2 + 1·2^1 + 1·2^0
@@ -44,13 +43,13 @@ then move left with increasing powers of two (`2^1`, `2^2`, ...).
 
 ---
 
-## Binary Fractions
+### Binary Fractions
 
 For the **fractional part**, digits to the right of the binary point have **negative powers of two**:
 
     2^-1, 2^-2, 2^-3, ...
 
-### Example
+**Example**
 
     11001101.101₂
 
@@ -172,7 +171,7 @@ Here `A` represents the digit **10**:
 
 ---
 
-# Conversion - Exercise 6: Base 4 → Base 8 (using Base 2 as intermediate)
+## Exercise 6: Base 4 → Base 8 (using Base 2 as intermediate)
 
 Perform the following conversion using base 2 as an intermediate base:  
 
@@ -180,7 +179,7 @@ Perform the following conversion using base 2 as an intermediate base:
 
 ---
 
-## Step 1: Convert Base 4 → Base 2
+### Step 1: Convert Base 4 → Base 2
 
 Each digit in base 4 can be converted to **2 bits** in binary:
 
@@ -200,7 +199,7 @@ Each digit in base 4 can be converted to **2 bits** in binary:
 
 ---
 
-## Step 2: Convert Base 2 → Base 8
+### Step 2: Convert Base 2 → Base 8
 
 In base 8, each digit corresponds to **3 binary bits**, because:
 
@@ -237,7 +236,7 @@ Given a pair of binary integers, perform:
 
 ---
 
-## Numbers Used
+### Numbers Used
 
 - A = 101₂
 - B = 10₂
@@ -246,18 +245,18 @@ Given a pair of binary integers, perform:
 
 ---
 
-## A. Binary Addition
+### A. Binary Addition
 
-### Operation
+**Operation**
 101₂ + 10₂
 
-### Step 1 – Align the bits
+**Step 1 – Align the bits**
 
   101
 + 010
 -----
 
-### Step 2 – Add from right to left
+**Step 2 – Add from right to left**
 
 - 1 + 0 = 1
 - 0 + 1 = 1
@@ -265,14 +264,14 @@ Given a pair of binary integers, perform:
 
 No carry is generated.
 
-### Result
+**Result**
 
   101
 + 010
 -----
   111
 
-### Final Result
+**Final Result**
 
 101₂ + 10₂ = 111₂
 
@@ -280,18 +279,18 @@ No carry is generated.
 
 ---
 
-## B. Binary Subtraction
+### B. Binary Subtraction
 
-### Operation
+**Operation**
 101₂ − 10₂
 
-### Step 1 – Align the bits
+**Step 1 – Align the bits**
 
   101
 - 010
 -----
 
-### Step 2 – Subtract from right to left
+**Step 2 – Subtract from right to left**
 
 - 1 − 0 = 1
 - 0 − 1 → not possible  
@@ -301,14 +300,14 @@ No carry is generated.
 - The leftmost bit becomes 0 after borrowing  
   → 0 − 0 = 0
 
-### Result
+**Result**
 
   101
 - 010
 -----
   011
 
-### Final Result
+**Final Result**
 
 101₂ − 10₂ = 11₂
 
@@ -316,44 +315,44 @@ No carry is generated.
 
 ---
 
-## C. Binary Multiplication
+### C. Binary Multiplication
 
-### Operation
+**Operation**
 101₂ × 10₂
 
-### Important Rules
+**Important Rules**
 
 - × 1 → copy the number
 - × 0 → the result is 0
 - each new row is shifted left by one position (equivalent to multiplying by 2)
 
-### Step 1 – Write the operation
+**Step 1 – Write the operation**
 
    101
 ×   10
 ------
 
-### Step 2 – Multiply by the rightmost bit (0)
+**Step 2 – Multiply by the rightmost bit (0)**
 
 101 × 0 = 000
 
    000
 
-### Step 3 – Multiply by the next bit (1)
+**Step 3 – Multiply by the next bit (1)**
 
 101 × 1 = 101  
 Shift left by one position:
 
   1010
 
-### Step 4 – Add the partial results
+**Step 4 – Add the partial results**
 
    000
 + 1010
 ------
   1010
 
-### Final Result
+**Final Result**
 
 101₂ × 10₂ = 1010₂
 
@@ -378,7 +377,7 @@ Tasks:
 
 ### Solution
 
-#### Step 1: Determine the sign of each number
+**Step 1: Determine the sign of each number**
 
 - `m1 = 100110` → Most Significant Bit (MSB) = `1` → Negative  
 - `m2 = 001011` → MSB = `0` → Positive  
@@ -387,7 +386,7 @@ Tasks:
 
 ---
 
-#### Step 2: Binary addition
+**Step 2: Binary addition**
 
 Add the two numbers **bit by bit**, including carries:
 
@@ -405,7 +404,7 @@ Since the numbers have **discordant signs**, there is **no risk of overflow** in
 
 ---
 
-#### Step 3: Interpret the result
+**Step 3: Interpret the result**
 
 - The sum in 6-bit two's complement is `110001`.  
 - MSB = `1` → Negative number.  
@@ -439,15 +438,15 @@ Consider the following fractional number in base 10:
 
 ### Solution
 
-#### 1. Conversion of 4.3125 from Base 10 to Base 2
+**1. Conversion of 4.3125 from Base 10 to Base 2**
 
 We separate the number into its integer and fractional parts.
 
-#### Integer Part
+**Integer Part**
 
 4 (base 10) = 100 (base 2)
 
-#### Fractional Part
+**Fractional Part**
 
 We repeatedly multiply the fractional part by 2:
 
@@ -462,13 +461,13 @@ Reading the integer parts from top to bottom:
 
 0.3125 (base 10) = 0.0101 (base 2)
 
-#### Final Binary Representation
+**Final Binary Representation**
 
 4.3125 (base 10) = 100.0101 (base 2)
 
 ---
 
-### 2. Conversion from Base 2 to Base 16
+**2. Conversion from Base 2 to Base 16**
 
 We group the binary digits in groups of four, starting from the binary point:
 
@@ -483,13 +482,13 @@ We group the binary digits in groups of four, starting from the binary point:
 
 ---
 
-### 3. IEEE 754 Single-Precision Representation
+**3. IEEE 754 Single-Precision Representation**
 
 Given binary number:
 
 -110.11011101 (base 2)
 
-#### 3.1 Sign Bit
+**3.1 Sign Bit**
 
 The number is negative:
 
@@ -497,7 +496,7 @@ Sign bit S = 1
 
 ---
 
-#### 3.2 Normalization
+**3.2 Normalization**
 
 We normalize the number to the form:
 
@@ -511,7 +510,7 @@ e = 2
 
 ---
 
-#### 3.3 Exponent with Bias
+**3.3 Exponent with Bias**
 
 For IEEE 754 single precision:
 
@@ -525,7 +524,7 @@ E = e + bias = 2 + 127 = 129
 
 ---
 
-#### 3.4 Mantissa
+**3.4 Mantissa**
 
 The mantissa consists of the bits following the leading 1:
 
@@ -537,7 +536,7 @@ We pad with zeros to reach 23 bits:
 
 ---
 
-### 4. Final IEEE 754 Representation (32 bits)
+**4. Final IEEE 754 Representation (32 bits)**
 
 | Field | Bits |
 |-------|------|
@@ -551,7 +550,7 @@ Final 32-bit binary representation:
 
 ---
 
-## Final Results
+### Final Results
 
 - 4.3125 (base 10) = 100.0101 (base 2) = 4.5 (base 16)
 - IEEE 754 single-precision representation:
@@ -568,12 +567,12 @@ Given an 8-bit binary number, write the general formulas to compute the minimum 
 
 Briefly explain why the ranges are different.
 
-## Explanation  
+**Explanation**  
 
 An 8-bit binary number provides 2^8 = 256 distinct bit patterns.  
 The representable range depends on how these patterns are interpreted.
 
-### Unsigned integers  
+**Unsigned integers**  
 All 8 bits represent the magnitude.
 
 - Minimum value:  
@@ -583,7 +582,7 @@ All 8 bits represent the magnitude.
 
 Range: [0, 255]
 
-### Sign and magnitude  
+**Sign and magnitude**  
 The most significant bit (MSB) represents the sign (0 = positive, 1 = negative).  
 The remaining 7 bits represent the magnitude.
 
@@ -596,7 +595,7 @@ Range: [-127, +127]
 
 This representation has two encodings for zero (+0 and -0), wasting one bit pattern.
 
-### Two’s complement  
+**Two’s complement**  
 The MSB has negative weight (-2^7), while the remaining bits have positive weights.
 
 - Maximum value:  
@@ -606,7 +605,7 @@ The MSB has negative weight (-2^7), while the remaining bits have positive weigh
 
 Range: [-128, +127]
 
-### Why the ranges differ  
+**Why the ranges differ**  
 The ranges differ because the most significant bit is interpreted differently:
 - as a value bit in unsigned representation,
 - as a sign indicator in sign-and-magnitude,
@@ -620,19 +619,19 @@ For each number, state whether it can be represented exactly using 8 bits.
 If it is not representable, write "overflow" and briefly justify why.  
 If it is representable, provide its 8-bit binary representation.  
 
-### Explanation  
+**Explanation**  
 
 The representable range for signed 8-bit integers in two’s complement is:
 - minimum: -128
 - maximum: +127
 
-### Number: -130  
+**Number: -130**  
 - Not representable on 8 bits.
 - Reason: -130 is smaller than the minimum value (-128) allowed by 8-bit two’s complement.
 
 Result: **overflow**
 
-### Number: -128  
+**Number: -128**  
 - Representable on 8 bits.
 - It corresponds to the minimum value in 8-bit two’s complement.
 - While with sign and magnitute it is not representable **overflow**
