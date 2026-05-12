@@ -378,7 +378,7 @@ We must remember that there are two ways to interpret the same binary number.
 
 The same binary sequence can represent different values depending on whether it is signed or unsigned.
 
-Example:
+Example (C2 Two's complement):
 
 | Binary | Signed Meaning | Unsigned Meaning |
 |---|---|---|
@@ -435,7 +435,7 @@ Execution continues normally.
 
 ---
 
-#### 2.3 Note About Labels and Branches
+### 2.3 Note About Labels and Branches
 
 Labels are only positions in code.
 
@@ -470,4 +470,242 @@ At low level, programs work mostly by:
 
 ---
 
-## 3 Loop
+## 3. Loops
+
+In RISC-V, loops are very primitive to implement.
+
+`while`, `for`, infinite loops, and repeated execution are all built using:
+- labels
+- jumps
+- branches
+
+---
+
+### 3.1 Labels (Revisited)
+
+To jump somewhere in the program, we use labels.
+
+Example:
+```asm
+LOOP:
+```
+
+This creates a location called `LOOP`.
+
+The CPU can now jump there.
+
+Keep in mind:
+- labels are NOT instructions
+- they are only position markers
+- `LOOP:` itself does not execute anything
+
+Example:
+```asm
+li t0, 1
+
+LOOP:
+addi t0, t0, 2
+```
+
+Here:
+- `LOOP:` does nothing
+- only `addi` gets executed
+
+---
+
+### 3.2 The `j` Instruction
+
+`j` = jump
+
+Syntax:
+```asm
+j LABEL
+```
+
+Meaning:
+```asm
+go to LABEL immediately
+```
+
+This is an unconditional jump:
+- no comparison
+- no condition
+- the CPU always jumps
+
+Example:
+```asm
+li t0, 2
+
+j END
+
+addi t0, t0, 100
+
+END:
+addi t0, t0, 2
+```
+
+Execution:
+- `t0 = 2`
+- `j END` immediately jumps to `END`
+- `addi t0, t0, 100` gets skipped
+- `addi t0, t0, 2` gets executed
+
+Final result:
+```asm
+t0 = 4
+```
+
+---
+
+First Real Loop
+
+Example:
+```asm
+li t0, 0
+
+LOOP:
+addi t0, t0, 1
+j LOOP
+```
+
+This is an infinite loop.
+
+Nothing stops it.
+
+Execution:
+- `t0` starts at `0`
+- `addi` increases it by `1`
+- `j LOOP` jumps back to the label
+- the process repeats forever
+
+So:
+```asm
+0 → 1 → 2 → 3 → 4 → ...
+```
+
+---
+
+A real useful loop usually needs:
+- repeated execution
+- a stopping condition
+
+In assembly:
+- `j` is used to repeat
+- branches are used to stop the loop
+
+---
+
+First Controlled Loop
+
+Example:
+```asm
+li t0, 0
+li t1, 3
+
+LOOP:
+addi t0, t0, 1
+
+beq t0, t1, END
+
+j LOOP
+
+END:
+```
+---
+
+Execution:
+
+Initial values
+```asm
+t0 = 0
+t1 = 3
+```
+
+First iteration
+```asm
+t0 = 1
+```
+
+Check:
+```asm
+1 == 3 → false
+```
+
+So:
+```asm
+j LOOP
+```
+
+The loop repeats.
+
+---
+
+Second iteration
+```asm
+t0 = 2
+```
+
+Check:
+```asm
+2 == 3 → false
+```
+
+Loop repeats again.
+
+---
+
+Third iteration
+```asm
+t0 = 3
+```
+
+Check:
+```asm
+3 == 3 → true
+```
+
+The branch jumps to `END`.
+
+The loop stops.
+
+Final result:
+```asm
+t0 = 3
+```
+
+---
+
+Another Example
+
+Example:
+```asm
+li t0, 10
+
+LOOP:
+addi t0, t0, -1
+
+beq t0, zero, END
+
+j LOOP
+
+END:
+```
+
+What this loop does:
+- starts from `10`
+- subtracts `1` every iteration
+- stops when `t0` becomes `0`
+
+Execution:
+```asm
+10 → 9 → 8 → 7 → ... → 1 → 0
+```
+
+When `t0 == 0`:
+```asm
+beq t0, zero, END
+```
+
+becomes true, so the loop stops.
+
+---
