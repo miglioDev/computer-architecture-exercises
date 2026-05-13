@@ -1,4 +1,4 @@
-# Exercises – binary-representation-and-operations Basics (with Solutions)
+# Exercises – binary-representation-and-operations Basics
 
 ---
 
