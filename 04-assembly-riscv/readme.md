@@ -470,7 +470,7 @@ At low level, programs work mostly by:
 
 ---
 
-## 3. Loops
+## 3 Loops
 
 In RISC-V, loops are very primitive to implement.
 
@@ -709,3 +709,212 @@ beq t0, zero, END
 becomes true, so the loop stops.
 
 ---
+
+## 4. Memory, Addresses and Arrays
+
+Until now we have mostly used registers, but they're small and limited in number, real programs need much more space for:
+- arrays
+- strings
+- large data structures
+
+That is why understanding memory (RAM) is important.
+
+Registers directly hold values, but memory uses addresses.
+
+An address is the location of data in memory.
+
+---
+
+### 4.1 `lw` — Load Word
+
+`lw` = Load Word
+
+This instruction reads memory into a register.
+
+Syntax:
+```asm
+lw destination, offset(base_register)
+```
+
+Example:
+```asm
+lw t0, 0(s0)
+```
+
+Meaning:
+```asm
+read memory at address:
+s0 + 0
+```
+
+Then copy the result into `t0`.
+
+---
+
+**Word Size**
+
+In RV32:
+```asm
+1 word = 4 bytes
+```
+
+So:
+```asm
+lw
+```
+
+loads 4 bytes from memory.
+
+---
+
+Example
+
+Suppose:
+```asm
+address 0x3E8 contains value 25
+```
+
+And:
+```asm
+s0 = 0x3E8
+```
+
+Code:
+```asm
+lw t0, 0(s0)
+```
+
+Address calculation:
+```asm
+0x3E8 + 0 = 0x3E8
+```
+
+Memory read:
+```asm
+memory[0x3E8] = 25
+```
+
+Now:
+```asm
+t0 = 25
+```
+
+So `lw` basically means:
+1. go to memory
+2. read data
+3. copy data into a register
+
+---
+
+### 4.2 `sw` — Store Word
+
+`sw` = Store Word
+
+This instruction writes a register value into memory.
+
+Syntax:
+```asm
+sw source, offset(base_register)
+```
+
+Example:
+```asm
+sw t0, 0(s0)
+```
+
+Meaning:
+```asm
+store t0 into memory at:
+s0 + 0
+```
+
+---
+
+Example
+
+Suppose:
+```asm
+t0 = 50
+s0 = 1000
+```
+
+Code:
+```asm
+sw t0, 0(s0)
+```
+
+Address calculation:
+```asm
+1000 + 0 = 1000
+```
+
+Store operation:
+```asm
+memory[1000] = 50
+```
+
+Now memory contains:
+```asm
+address 1000 → value 50
+```
+
+---
+
+### Direction of Data and Offset
+
+`lw`
+```asm
+memory -> register
+```
+
+`sw`
+```asm
+register -> memory
+```
+
+Registers are used to work with data, while memory is used to store larger amounts of data.
+
+---
+
+Understanding the Offset
+
+Example:
+```asm
+lw t0, 4(s0)
+```
+
+Meaning:
+```asm
+read from address:
+s0 + 4
+```
+
+The offset is added to the base address.
+
+So:
+- `0(s0)` → first memory position
+- `4(s0)` → next word
+- `8(s0)` → next word again
+
+Because:
+```asm
+1 word = 4 bytes
+```
+
+Example:
+```asm
+s0 = 1000
+```
+
+Then:
+```asm
+0(s0) -> 1000
+4(s0) -> 1004
+8(s0) -> 1008
+```
+
+This is exactly how arrays are accessed in memory.
+
+---
+
+### 3.3 Arrays in Memory
