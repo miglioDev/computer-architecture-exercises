@@ -918,3 +918,129 @@ This is exactly how arrays are accessed in memory.
 ---
 
 ### 3.3 Arrays in Memory
+
+Suppose we have (in C):
+
+```c
+int arr[3] = {10, 20, 30};
+```
+
+Each integer in RV32 uses 4 bytes, so in memory it looks like this:
+
+| Address | Value |
+|---|---|
+| 1000 | 10 (`arr[0]`) |
+| 1004 | 20 (`arr[1]`) |
+| 1008 | 30 (`arr[2]`) |
+
+Addresses increase by 4 because each integer is 4 bytes.
+
+---
+
+### Base Address
+
+Suppose:
+```asm
+s0 = 1000
+```
+
+This means:
+```asm
+s0 points to arr[0]
+```
+
+So `s0` contains the base address of the array.
+
+---
+
+#### 3.3.1 Accessing Arrays
+
+Accessing `arr[0]`
+
+Code:
+```asm
+lw t0, 0(s0)
+```
+
+Address calculation:
+```asm
+1000 + 0 = 1000
+```
+
+Read:
+```asm
+10
+```
+
+---
+
+Accessing `arr[1]`
+
+Code:
+```asm
+lw t0, 4(s0)
+```
+
+Address calculation:
+```asm
+1000 + 4 = 1004
+```
+
+Read:
+```asm
+20
+```
+
+---
+
+`arr[2]` would be:
+```asm
+lw t0, 8(s0)
+```
+
+Because for integer arrays:
+```asm
+offset = index * 4
+```
+
+---
+
+#### 3.3.2 Writing into Arrays
+
+Suppose:
+```asm
+t0 = 99
+s0 = 1000
+```
+
+Code:
+```asm
+sw t0, 4(s0)
+```
+
+Address calculation:
+```asm
+1000 + 4 = 1004
+```
+
+This stores:
+```asm
+memory[1004] = 99
+```
+
+Now the array becomes:
+
+| Address | Value |
+|---|---|
+| 1000 | 10 (`arr[0]`) |
+| 1004 | 99 (`arr[1]`) |
+| 1008 | 30 (`arr[2]`) |
+
+We need to keep in mind that:
+```asm
+s0 contains the address of the array,
+not the array value itself
+```
+
+---
+
