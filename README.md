@@ -19,8 +19,3 @@ The repository is organized by topic:
   Notes on RISC-V and simple assembly programming exercises 
 
 Each folder contains its own `README.md` with exercises and detailed explanations.
-
-## Notes
-
-Remember, it is better to actively try the exercises rather than just reading how to do them! Each exercise includes a solution and an explanation, this material reflects my personal study and is intended for educational purposes.
-Suggestions, corrections, or improvements are welcome.
