@@ -18,4 +18,4 @@ The repository is organized by topic:
 - `04-assembly-and-riscv`  
   Notes on RISC-V and simple assembly programming exercises 
 
-Each folder contains its own `README.md` with exercises and detailed explanations.
+Each folder contains its own `README.md` with exercises and explanations.
