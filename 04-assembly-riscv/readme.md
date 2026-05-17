@@ -32,6 +32,8 @@ Common registers:
 
 `li` = Load Immediate
 
+immediate values are numerical constants written directly within the assembly instructions
+
 Syntax:
 
 ```asm
@@ -929,9 +931,9 @@ Each integer in RV32 uses 4 bytes, so in memory it looks like this:
 
 | Address | Value |
 |---|---|
-| 1000 | 10 |  (`arr[0]`)
-| 1004 | 20 |  (`arr[1]`)
-| 1008 | 30 |  (`arr[2]`)
+| 1000 | 10 |  arr[0]
+| 1004 | 20 |  arr[1]
+| 1008 | 30 |  arr[2]
 
 Addresses increase by 4 because each integer is 4 bytes.
 
@@ -1032,9 +1034,9 @@ Now the array becomes:
 
 | Address | Value |
 |---|---|
-| 1000 | 10 |  (`arr[0]`)
-| 1004 | 99 |  (`arr[1]`)
-| 1008 | 30 |  (`arr[2]`)
+| 1000 | 10 |  arr[0]
+| 1004 | 99 |  arr[1]
+| 1008 | 30 |  arr[2]
 
 We need to keep in mind that:
 ```asm
@@ -1044,3 +1046,157 @@ not the array value itself
 
 ---
 
+## 5. Program Structure, Directives and System Basics
+
+Little note:
+
+In assembly we can leave comments in the code using:
+```asm
+# single line comment
+```
+
+or:
+```c
+/* multi line
+   comment */
+```
+
+---
+
+`x0` / `zero` is hardwired to `0` and cannot be modified.
+
+Registers `a0–a7` are used for:
+- function arguments
+- return values
+
+Registers `t0–t6` are caller-saved registers.
+They can be overwritten by called functions.
+
+If you only need a register temporarily inside a function, use `t0–t6`.
+
+Registers `s0–s11` are callee-saved registers.
+Called functions must preserve their values.
+
+If you need a value to survive across function calls, use `s0–s11`.
+
+---
+
+### 5.1 Symbols and Directives
+
+The developer or the compiler can create symbols.
+
+A symbol is a name associated with:
+- a numerical constant
+- an address
+- or a position in the program
+
+One common directive is:
+```asm
+.set
+```
+
+Example:
+```asm
+.set max_temp, 95   # create the symbol max_temp with value 95
+
+li t1, max_temp     # load the symbol value into t1
+```
+
+Labels that we saw before are also a special type of symbol because they mark positions in code.
+
+---
+
+Some common directives:
+
+| Directive | Meaning |
+|---|---|
+| `.text` | code section |
+| `.data` | initialized data section |
+| `.bss` | uninitialized data section |
+| `.globl` | make a symbol visible to the linker |
+| `.equ` | associate a symbol with a numerical constant |
+| `.set` | create a custom symbol |
+
+---
+
+### 5.2 `.data`
+
+Here we can define initialized data like:
+- strings
+- arrays
+- variables with known values
+
+These values are ready when the program starts.
+
+Example:
+```asm
+.data
+
+x:     .byte 10          # 8-bit variable = 10
+y:     .half 300         # 16-bit variable
+z:     .word 546         # 32-bit variable
+
+text:  .ascii "Hello\0"  # string with null terminator
+
+array: .word 1,2,3,4,5  # array of 5 integers
+```
+
+---
+
+### 5.3 `.globl`
+
+`.globl` declares a symbol as global.
+
+This means other files can access it during linking.
+
+It is commonly used for:
+- functions
+- global variables
+
+Example:
+```asm
+.globl main     # make main globally visible
+.globl x        # make x visible to other files
+
+.data
+x: .word 10     # global initialized variable
+
+.text
+main:
+la a0, x         # load x address
+lw a1, 0(a0)     # read the value
+
+ret
+```
+
+---
+
+### 5.4 `.bss`
+
+`.bss` is used for uninitialized data.
+
+Variables declared here reserve memory space, but no initial value is stored in the executable.
+
+This is useful for:
+- buffers
+- large arrays
+- variables initialized later
+
+Example:
+```asm
+.bss
+
+buffer: .space 64     # reserve 64 bytes
+array:  .space 40     # reserve space for 10 integers
+```
+
+In RV32:
+```asm
+10 integers * 4 bytes = 40 bytes
+```
+
+So `.space 40` reserves enough memory for 10 integers.
+
+--- 
+
+## 6. 
