@@ -1199,4 +1199,128 @@ So `.space 40` reserves enough memory for 10 integers.
 
 --- 
 
+### 5.5 `.equ`
+
+The directive `.equ` (equate) is used to define a symbol and assign a numerical constant to it.
+
+Example:
+```asm
+.equ SIZE, 200
+```
+
+Every time the assembler meets `SIZE` in the code, the value will be interpreted as `200`.
+
+This can make the code:
+- more readable
+- easier to maintain
+
+The symbol created with `.equ` usually should not be redefined later.
+
+This is similar to `#define` in C.
+
+With `.equ` we do NOT physically allocate memory.
+
+---
+
+### 5.6 Input/Output (I/O) and System Calls
+
+RV32I does not directly include input/output operations.
+
+Usually the operating system provides an interface for:
+- printing text
+- reading input
+- exiting programs
+- and other services
+
+These operations are executed using system calls through the instruction:
+```asm
+ecall
+```
+
+`ecall` means:
+```asm
+environment call
+```
+
+To execute a system call:
+- register `a7` must contain the system call number
+- arguments are usually stored in `a0`
+
+---
+
+Most common operations:
+
+| `a7` | Function | Registers / Notes |
+|---|---|---|
+| `1` | print integer | `a0 = integer to print` |
+| `4` | print string | `a0 = address of string` |
+| `5` | read integer | result returned in `a0` |
+| `8` | read string | `a0 = buffer address`, `a1 = max size` |
+| `10` | exit program | terminate execution |
+| `11` | print character | `a0 = character` |
+| `12` | read character | result returned in `a0` |
+
+---
+
+Basic example:
+```asm
+.data
+msg:
+    .asciiz "Helloo!"    # string to print
+
+.text
+
+main:
+    la a0, msg           # load string address into a0
+    li a7, 4             # system call code for print_string
+    ecall                # execute the call
+
+    li a7, 10            # system call code for exit
+    ecall                # terminate program
+```
+
+---
+
+Another example: reading an integer from keyboard
+
+```asm
+.text
+
+main:
+    li a7, 5         # read integer
+    ecall
+
+    # returned value is now inside a0
+
+    li a7, 1         # print integer
+    ecall
+
+    li a7, 10        # exit
+    ecall
+```
+
+Execution:
+- the program waits for keyboard input
+- the integer is stored in `a0`
+- the same value is printed back
+
+---
+
+### System Call 10
+
+To properly terminate a program in RV32I, it is necessary to invoke system call `10`.
+
+Example:
+```asm
+li a7, 10
+ecall
+```
+
+An exit value inside `a0` is optional, but it can be useful to indicate:
+- success
+- errors
+- program status
+
+---
+
 ## 6. 
