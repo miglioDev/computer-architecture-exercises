@@ -8,7 +8,7 @@ Registers store numbers. They are similar to variables in C.
 
 Example:
 
-```asm
+```riscv
 t0 = 5
 t1 = 10
 ```
@@ -16,7 +16,7 @@ t1 = 10
 But in RISC-V, you do NOT declare registers like in C.
 The CPU already has them; we just use them.
 
-```asm
+```riscv
 li t0, 5
 ```
 
@@ -36,19 +36,19 @@ immediate values are numerical constants written directly within the assembly in
 
 Syntax:
 
-```asm
+```riscv
 li destination, value
 ```
 
 Example:
 
-```asm
+```riscv
 li t0, 7
 ```
 
 Meaning:
 
-```asm
+```riscv
 t0 = 7
 ```
 
@@ -60,19 +60,19 @@ The register `t0` now contains the value `7`.
 
 Syntax:
 
-```asm
+```riscv
 addi destination, source, value
 ```
 
 Example:
 
-```asm
+```riscv
 addi t0, t0, 3
 ```
 
 Meaning:
 
-```asm
+```riscv
 t0 = t0 + 3
 ```
 
@@ -80,7 +80,7 @@ So the current value of `t0` is increased by `3`.
 
 Example:
 
-```asm
+```riscv
 li t0, 5
 addi t0, t0, 3
 ```
@@ -92,7 +92,7 @@ Execution:
 
 Final value:
 
-```asm
+```riscv
 t0 = 8
 ```
 
@@ -102,25 +102,25 @@ t0 = 8
 
 Syntax:
 
-```asm
+```riscv
 add destination, source1, source2
 ```
 
 Example:
 
-```asm
+```riscv
 add t0, t1, t2
 ```
 
 Meaning:
 
-```asm
+```riscv
 t0 = t1 + t2
 ```
 
 Example:
 
-```asm
+```riscv
 li t1, 4
 li t2, 6
 add t0, t1, t2
@@ -128,7 +128,7 @@ add t0, t1, t2
 
 Final value:
 
-```asm
+```riscv
 t0 = 10
 ```
 
@@ -142,7 +142,7 @@ When reading assembly, it is usually better to simulate the program line by line
 
 Example:
 
-```asm
+```riscv
 li t0, 5
 addi t0, t0, 3
 addi t0, t0, 2
@@ -166,7 +166,7 @@ x = x + 2;
 
 RISC-V equivalent:
 
-```asm
+```riscv
 li t0, 5
 addi t0, t0, 3
 addi t0, t0, 2
@@ -208,7 +208,7 @@ To understand branches, we first need labels.
 Labels are positions in code.
 
 Examples:
-```asm
+```riscv
 START:
 LOOP:
 END:
@@ -221,18 +221,18 @@ A label is simply a name for a location in the program.
 #### `beq` — Branch if Equal
 
 Syntax:
-```asm
+```riscv
 beq reg1, reg2, LABEL
 ```
 
 Meaning:
-```asm
+```riscv
 if reg1 == reg2
     jump to LABEL
 ```
 
 Example:
-```asm
+```riscv
 li t0, 5
 li t1, 5
 
@@ -253,7 +253,7 @@ Execution:
 - Execution continues at `END`
 
 Final result:
-```asm
+```riscv
 t0 = 6
 ```
 
@@ -262,18 +262,18 @@ t0 = 6
 #### `bne` — Branch if Not Equal
 
 Syntax:
-```asm
+```riscv
 bne reg1, reg2, LABEL
 ```
 
 Meaning:
-```asm
+```riscv
 if reg1 != reg2
     jump to LABEL
 ```
 
 Example:
-```asm
+```riscv
 li t0, 2
 li t1, 5
 
@@ -292,7 +292,7 @@ Execution:
 - Execution continues at `SKIP`
 
 Final result:
-```asm
+```riscv
 t0 = 3
 ```
 
@@ -301,18 +301,18 @@ t0 = 3
 #### `blt` — Branch if Less Than
 
 Syntax:
-```asm
+```riscv
 blt reg1, reg2, LABEL
 ```
 
 Meaning:
-```asm
+```riscv
 if reg1 < reg2
     jump to LABEL
 ```
 
 Example:
-```asm
+```riscv
 li t0, 2
 li t1, 5
 
@@ -330,7 +330,7 @@ Execution:
 - `addi t0, t0, 100` gets skipped
 
 Final result:
-```asm
+```riscv
 t0 = 3
 ```
 
@@ -339,18 +339,18 @@ t0 = 3
 #### `bge` — Branch if Greater or Equal
 
 Syntax:
-```asm
+```riscv
 bge reg1, reg2, LABEL
 ```
 
 Meaning:
-```asm
+```riscv
 if reg1 >= reg2
     jump to LABEL
 ```
 
 Example:
-```asm
+```riscv
 li t0, 7
 li t1, 5
 
@@ -368,7 +368,7 @@ Execution:
 - `addi t0, t0, 100` gets skipped
 
 Final result:
-```asm
+```riscv
 t0 = 8
 ```
 
@@ -399,18 +399,18 @@ This is important for the following branch instructions.
 `bltu` compares numbers as **unsigned** values.
 
 Syntax:
-```asm
+```riscv
 bltu reg1, reg2, LABEL
 ```
 
 Meaning:
-```asm
+```riscv
 if reg1 < reg2 (unsigned comparison)
     jump to LABEL
 ```
 
 Example:
-```asm
+```riscv
 li t0, -1
 li t1, 5
 
@@ -427,7 +427,7 @@ Important:
 - So unsigned comparison changes the result
 
 As unsigned:
-```asm
+```riscv
 4294967295 > 5
 ```
 
@@ -444,7 +444,7 @@ Labels are only positions in code.
 A label itself does not execute anything.
 
 Example:
-```asm
+```riscv
 LOOP:
 ```
 
@@ -488,7 +488,7 @@ In RISC-V, loops are very primitive to implement.
 To jump somewhere in the program, we use labels.
 
 Example:
-```asm
+```riscv
 LOOP:
 ```
 
@@ -502,7 +502,7 @@ Keep in mind:
 - `LOOP:` itself does not execute anything
 
 Example:
-```asm
+```riscv
 li t0, 1
 
 LOOP:
@@ -520,12 +520,12 @@ Here:
 `j` = jump
 
 Syntax:
-```asm
+```riscv
 j LABEL
 ```
 
 Meaning:
-```asm
+```riscv
 go to LABEL immediately
 ```
 
@@ -535,7 +535,7 @@ This is an unconditional jump:
 - the CPU always jumps
 
 Example:
-```asm
+```riscv
 li t0, 2
 
 j END
@@ -553,7 +553,7 @@ Execution:
 - `addi t0, t0, 2` gets executed
 
 Final result:
-```asm
+```riscv
 t0 = 4
 ```
 
@@ -562,7 +562,7 @@ t0 = 4
 First Real Loop
 
 Example:
-```asm
+```riscv
 li t0, 0
 
 LOOP:
@@ -581,7 +581,7 @@ Execution:
 - the process repeats forever
 
 So:
-```asm
+```riscv
 0 → 1 → 2 → 3 → 4 → ...
 ```
 
@@ -600,7 +600,7 @@ In assembly:
 First Controlled Loop
 
 Example:
-```asm
+```riscv
 li t0, 0
 li t1, 3
 
@@ -618,23 +618,23 @@ END:
 Execution:
 
 Initial values
-```asm
+```riscv
 t0 = 0
 t1 = 3
 ```
 
 First iteration
-```asm
+```riscv
 t0 = 1
 ```
 
 Check:
-```asm
+```riscv
 1 == 3 → false
 ```
 
 So:
-```asm
+```riscv
 j LOOP
 ```
 
@@ -643,12 +643,12 @@ The loop repeats.
 ---
 
 Second iteration
-```asm
+```riscv
 t0 = 2
 ```
 
 Check:
-```asm
+```riscv
 2 == 3 → false
 ```
 
@@ -657,12 +657,12 @@ Loop repeats again.
 ---
 
 Third iteration
-```asm
+```riscv
 t0 = 3
 ```
 
 Check:
-```asm
+```riscv
 3 == 3 → true
 ```
 
@@ -671,7 +671,7 @@ The branch jumps to `END`.
 The loop stops.
 
 Final result:
-```asm
+```riscv
 t0 = 3
 ```
 
@@ -680,7 +680,7 @@ t0 = 3
 Another Example
 
 Example:
-```asm
+```riscv
 li t0, 10
 
 LOOP:
@@ -699,12 +699,12 @@ What this loop does:
 - stops when `t0` becomes `0`
 
 Execution:
-```asm
+```riscv
 10 → 9 → 8 → 7 → ... → 1 → 0
 ```
 
 When `t0 == 0`:
-```asm
+```riscv
 beq t0, zero, END
 ```
 
@@ -734,17 +734,17 @@ An address is the location of data in memory.
 This instruction reads memory into a register.
 
 Syntax:
-```asm
+```riscv
 lw destination, offset(base_register)
 ```
 
 Example:
-```asm
+```riscv
 lw t0, 0(s0)
 ```
 
 Meaning:
-```asm
+```riscv
 read memory at address:
 s0 + 0
 ```
@@ -756,12 +756,12 @@ Then copy the result into `t0`.
 **Word Size**
 
 In RV32:
-```asm
+```riscv
 1 word = 4 bytes
 ```
 
 So:
-```asm
+```riscv
 lw
 ```
 
@@ -772,32 +772,32 @@ loads 4 bytes from memory.
 Example
 
 Suppose:
-```asm
+```riscv
 address 0x3E8 contains value 25
 ```
 
 And:
-```asm
+```riscv
 s0 = 0x3E8
 ```
 
 Code:
-```asm
+```riscv
 lw t0, 0(s0)
 ```
 
 Address calculation:
-```asm
+```riscv
 0x3E8 + 0 = 0x3E8
 ```
 
 Memory read:
-```asm
+```riscv
 memory[0x3E8] = 25
 ```
 
 Now:
-```asm
+```riscv
 t0 = 25
 ```
 
@@ -815,17 +815,17 @@ So `lw` basically means:
 This instruction writes a register value into memory.
 
 Syntax:
-```asm
+```riscv
 sw source, offset(base_register)
 ```
 
 Example:
-```asm
+```riscv
 sw t0, 0(s0)
 ```
 
 Meaning:
-```asm
+```riscv
 store t0 into memory at:
 s0 + 0
 ```
@@ -835,28 +835,28 @@ s0 + 0
 Example
 
 Suppose:
-```asm
+```riscv
 t0 = 50
 s0 = 1000
 ```
 
 Code:
-```asm
+```riscv
 sw t0, 0(s0)
 ```
 
 Address calculation:
-```asm
+```riscv
 1000 + 0 = 1000
 ```
 
 Store operation:
-```asm
+```riscv
 memory[1000] = 50
 ```
 
 Now memory contains:
-```asm
+```riscv
 address 1000 → value 50
 ```
 
@@ -865,12 +865,12 @@ address 1000 → value 50
 ### Direction of Data and Offset
 
 `lw`
-```asm
+```riscv
 memory -> register
 ```
 
 `sw`
-```asm
+```riscv
 register -> memory
 ```
 
@@ -881,12 +881,12 @@ Registers are used to work with data, while memory is used to store larger amoun
 Understanding the Offset
 
 Example:
-```asm
+```riscv
 lw t0, 4(s0)
 ```
 
 Meaning:
-```asm
+```riscv
 read from address:
 s0 + 4
 ```
@@ -899,17 +899,17 @@ So:
 - `8(s0)` → next word again
 
 Because:
-```asm
+```riscv
 1 word = 4 bytes
 ```
 
 Example:
-```asm
+```riscv
 s0 = 1000
 ```
 
 Then:
-```asm
+```riscv
 0(s0) -> 1000
 4(s0) -> 1004
 8(s0) -> 1008
@@ -942,12 +942,12 @@ Addresses increase by 4 because each integer is 4 bytes.
 ### Base Address
 
 Suppose:
-```asm
+```riscv
 s0 = 1000
 ```
 
 This means:
-```asm
+```riscv
 s0 points to arr[0]
 ```
 
@@ -960,17 +960,17 @@ So `s0` contains the base address of the array.
 Accessing `arr[0]`
 
 Code:
-```asm
+```riscv
 lw t0, 0(s0)
 ```
 
 Address calculation:
-```asm
+```riscv
 1000 + 0 = 1000
 ```
 
 Read:
-```asm
+```riscv
 10
 ```
 
@@ -979,29 +979,29 @@ Read:
 Accessing `arr[1]`
 
 Code:
-```asm
+```riscv
 lw t0, 4(s0)
 ```
 
 Address calculation:
-```asm
+```riscv
 1000 + 4 = 1004
 ```
 
 Read:
-```asm
+```riscv
 20
 ```
 
 ---
 
 `arr[2]` would be:
-```asm
+```riscv
 lw t0, 8(s0)
 ```
 
 Because for integer arrays:
-```asm
+```riscv
 offset = index * 4
 ```
 
@@ -1010,23 +1010,23 @@ offset = index * 4
 #### 4.3.2 Writing into Arrays
 
 Suppose:
-```asm
+```riscv
 t0 = 99
 s0 = 1000
 ```
 
 Code:
-```asm
+```riscv
 sw t0, 4(s0)
 ```
 
 Address calculation:
-```asm
+```riscv
 1000 + 4 = 1004
 ```
 
 This stores:
-```asm
+```riscv
 memory[1004] = 99
 ```
 
@@ -1039,7 +1039,7 @@ Now the array becomes:
 | 1008 | 30 |  arr[2]
 
 We need to keep in mind that:
-```asm
+```riscv
 s0 contains the address of the array,
 not the array value itself
 ```
@@ -1048,10 +1048,10 @@ not the array value itself
 
 ## 5. Program Structure, Directives and System Basics
 
-Little note:
+Extra note:
 
 In assembly we can leave comments in the code using:
-```asm
+```riscv
 # single line comment
 ```
 
@@ -1091,12 +1091,12 @@ A symbol is a name associated with:
 - or a position in the program
 
 One common directive is:
-```asm
+```riscv
 .set
 ```
 
 Example:
-```asm
+```riscv
 .set max_temp, 95   # create the symbol max_temp with value 95
 
 li t1, max_temp     # load the symbol value into t1
@@ -1119,7 +1119,7 @@ Some common directives:
 
 ---
 
-### 5.2 `.data`
+#### `.data`
 
 Here we can define initialized data like:
 - strings
@@ -1129,7 +1129,7 @@ Here we can define initialized data like:
 These values are ready when the program starts.
 
 Example:
-```asm
+```riscv
 .data
 
 x:     .byte 10          # 8-bit variable = 10
@@ -1143,7 +1143,7 @@ array: .word 1,2,3,4,5  # array of 5 integers
 
 ---
 
-### 5.3 `.globl`
+#### `.globl`
 
 `.globl` declares a symbol as global.
 
@@ -1154,7 +1154,7 @@ It is commonly used for:
 - global variables
 
 Example:
-```asm
+```riscv
 .globl main     # make main globally visible
 .globl x        # make x visible to other files
 
@@ -1171,7 +1171,7 @@ ret
 
 ---
 
-### 5.4 `.bss`
+#### `.bss`
 
 `.bss` is used for uninitialized data.
 
@@ -1183,7 +1183,7 @@ This is useful for:
 - variables initialized later
 
 Example:
-```asm
+```riscv
 .bss
 
 buffer: .space 64     # reserve 64 bytes
@@ -1191,7 +1191,7 @@ array:  .space 40     # reserve space for 10 integers
 ```
 
 In RV32:
-```asm
+```riscv
 10 integers * 4 bytes = 40 bytes
 ```
 
@@ -1199,12 +1199,12 @@ So `.space 40` reserves enough memory for 10 integers.
 
 --- 
 
-### 5.5 `.equ`
+#### `.equ`
 
 The directive `.equ` (equate) is used to define a symbol and assign a numerical constant to it.
 
 Example:
-```asm
+```riscv
 .equ SIZE, 200
 ```
 
@@ -1222,7 +1222,7 @@ With `.equ` we do NOT physically allocate memory.
 
 ---
 
-### 5.6 Input/Output (I/O) and System Calls
+### 5.2 Input/Output (I/O) and System Calls
 
 RV32I does not directly include input/output operations.
 
@@ -1233,12 +1233,12 @@ Usually the operating system provides an interface for:
 - and other services
 
 These operations are executed using system calls through the instruction:
-```asm
+```riscv
 ecall
 ```
 
 `ecall` means:
-```asm
+```riscv
 environment call
 ```
 
@@ -1263,7 +1263,7 @@ Most common operations:
 ---
 
 Basic example:
-```asm
+```riscv
 .data
 msg:
     .asciiz "Helloo!"    # string to print
@@ -1283,7 +1283,7 @@ main:
 
 Another example: reading an integer from keyboard
 
-```asm
+```riscv
 .text
 
 main:
@@ -1306,12 +1306,12 @@ Execution:
 
 ---
 
-### System Call 10
+#### System Call 10
 
 To properly terminate a program in RV32I, it is necessary to invoke system call `10`.
 
 Example:
-```asm
+```riscv
 li a7, 10
 ecall
 ```
@@ -1323,4 +1323,30 @@ An exit value inside `a0` is optional, but it can be useful to indicate:
 
 ---
 
+### 5.3 `la`
+
+la = Load Address. la is a pseudo-instruction a shortcut for the assembler that translates it into real instructions
+
+when we declare: 
+```riscv
+.data
+num1: .word 16
+result: .word 0
+```
+
+num1 is an address, not a value. Before using lw, we need to know this address
+
+```riscv
+la t0, num1        # t0 = address of num1
+lw t1, 0(t0)       # t1 = value stored at memory address t0
+
+la t2, result      # load address of 'result' in t2
+sw t1, 0(t2)       # store t1 to the address pointed by t2
+```
+
+In this case la loads the address of num1 into register t0. 
+In contrast, lw loads a value from memory.
+
 ## 6. 
+
+
