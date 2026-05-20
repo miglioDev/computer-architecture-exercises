@@ -1,6 +1,6 @@
 # Computer Architecture Exercises
 
-A collection of notes, exercises, and clear explanations about computer architecture. I’ve made it public in case it’s helpful to students or anyone curious
+My notes and exercises on computer architecture fundamentals. I’ve made it public in case it’s helpful to students or anyone curious
 
 ## Repository Structure
 
