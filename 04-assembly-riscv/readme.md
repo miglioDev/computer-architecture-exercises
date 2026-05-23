@@ -1349,10 +1349,139 @@ In contrast, lw loads a value from memory.
 
 ### 5.4 `srai`
 
-/2 division with aritemtic shift
+`srai` = Shift Right Arithmetic Immediate
 
-## 6. Functions and procedures in RISC-V
+This instruction shifts the bits to the right.
 
+Syntax:
+```asm
+srai destination, source, shift_amount
+```
 
+Example:
+```asm
+srai t0, t0, 1
+```
 
+Meaning:
+```asm
+t0 = t0 >> 1 #shift bits to the right
+```
 
+Arithmetic right shift preserves the sign bit.
+
+This is important for signed numbers because negative values remain negative after the shift.
+
+A right arithmetic shift by 1 is similar to:
+```asm
+division by 2
+```
+
+Example:
+```asm
+li t0, 20
+
+srai t0, t0, 1
+```
+
+Execution:
+```asm
+20 / 2 = 10
+```
+
+Now:
+```asm
+t0 = 10
+```
+
+Another example:
+```asm
+li t0, 40
+
+srai t0, t0, 2
+```
+
+Execution:
+```asm
+40 / 4 = 10
+```
+
+Because:
+```asm
+right shift by 2 = divide by 2²
+```
+
+So in general:
+```asm
+srai by n ≈ division by 2ⁿ
+```
+
+## 6. Functions and Procedures in RISC-V
+
+### 6.1 Types of Routine
+
+- **Routine** → generic term that indicates a block of code that executes a task
+- **Function** → a specific type of routine that accepts parameters and returns a value
+- **Procedure** → another type of routine that accepts parameters but does not return values
+- **Call site** → the position in the code where the routine gets called
+- **Caller routine** → the routine that calls another routine
+- **Callee routine** → the routine that gets invoked/called from the call site
+
+In assembly, routines are defined by:
+- a label
+- a block of code
+
+Invoking a routine consists of jumping to the entry point of the routine.
+
+After the routine terminates, it is necessary to know the address to jump back to, so execution can continue after the call site.
+
+Because of this, we need to save the return address to make sure the routine can return correctly to the caller.
+
+The instruction:
+```asm
+jal
+```
+
+saves the return address inside the register:
+```asm
+ra
+```
+
+The return address is usually:
+```asm
+PC + 4
+```
+
+because it is the address of the next instruction after the call.
+
+---
+
+### ABI (Application Binary Interface)
+
+The ABI is a set of conventions that defines how routines interact with the execution environment in a system.
+
+It establishes rules for:
+- how parameters are passed
+- how values are returned
+- how registers are managed
+- how data is saved in memory
+- how the memory layout is defined
+
+---
+
+In the RISC-V ILP32 ABI model, parameters are passed through dedicated registers:
+```asm
+a0, a1, ..., a7
+```
+
+So when a function gets called, the first 8 arguments are already stored in these registers in order.
+
+If the function requires more than 8 arguments:
+- the remaining arguments are placed on the stack
+
+The caller must:
+- reserve the necessary space on the stack
+- insert the extra parameters in reverse order
+- and only after that perform the routine jump
+
+After the routine returns, the caller is also responsible for restoring the stack to its previous state.
