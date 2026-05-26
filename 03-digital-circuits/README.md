@@ -161,3 +161,65 @@ NAND-only implementation:
 **NAND-Only Circuit Implementation:**
 ![NAND Only Circuit](images/Screenshot006.png)
 
+## Exercise 7: Karnaugh Map Minimization and NOR Synthesis
+
+Truth Table
+
+| X | Y | Z | F |
+|---|---|---|---|
+| 0 | 0 | 0 | 0 |
+| 0 | 0 | 1 | 1 |
+| 0 | 1 | 0 | 0 |
+| 0 | 1 | 1 | 1 |
+| 1 | 0 | 0 | 0 |
+| 1 | 0 | 1 | 0 |
+| 1 | 1 | 0 | 1 |
+| 1 | 1 | 1 | 1 |
+
+---
+
+Karnaugh Map
+
+| XY \ Z | 0 | 1 |
+|--------|---|---|
+| 00     | 0 | 1 |
+| 01     | 0 | 1 |
+| 11     | 1 | 1 |
+| 10     | 0 | 0 |
+
+---
+
+### Grouping
+
+We create the following groups:
+
+1. Vertical group on column `Z = 1` for rows `00` and `01`
+   - Common variable: `~X`
+   - Resulting term: `(~X + Z)` in POS form
+
+2. Horizontal group on row `XY = 11`
+   - Common variables: `X` and `Y`
+   - Resulting term: `(X + Y)` in POS form
+
+---
+
+### Minimal POS Expression
+
+The minimal Product Of Sums expression is:
+
+![Circuit](images/Screenshot007.png)
+
+This is the simplified function obtained from the Karnaugh map.
+
+---
+
+### NOR Implementation
+
+To implement the circuit using only NOR gates replace all AND/OR operations with equivalent NOR structures
+
+The NOR synthesis still represents the same Boolean function:
+
+![Circuit](images/Screenshot008.png)
+
+So if your NOR circuit gives the same final expression, your implementation is correct.
+
