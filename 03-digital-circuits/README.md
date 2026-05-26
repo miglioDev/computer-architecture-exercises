@@ -163,6 +163,8 @@ NAND-only implementation:
 
 ## Exercise 7: Karnaugh Map Minimization and NOR Synthesis
 
+Given the truth table, simplify the function using a Karnaugh map, obtain the minimal POS (Product Of Sums) expression, and implement the circuit using only NOR gates.
+
 Truth Table
 
 | X | Y | Z | F |
