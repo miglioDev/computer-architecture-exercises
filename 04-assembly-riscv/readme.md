@@ -1327,6 +1327,11 @@ An exit value inside `a0` is optional, but it can be useful to indicate:
 
 la = Load Address. la is a pseudo-instruction a shortcut for the assembler that translates it into real instructions
 
+Syntax:
+```asm
+la destination, symbol
+```
+
 when we declare: 
 ```asm
 .data
