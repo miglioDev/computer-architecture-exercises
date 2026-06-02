@@ -1046,6 +1046,91 @@ not the array value itself
 
 ---
 
+#### 4.3.3 Full example Building an Array with a Loop
+
+Suppose we want to create the following array:
+
+```c
+int arr[5] = {0, 1, 2, 3, 4};
+```
+
+Assume:
+```asm
+s0 = 1000    # base address of the array
+```
+
+Code:
+```asm
+li t0, 0      # current value
+li t1, 5      # number of elements
+
+LOOP:
+sw t0, 0(s0)  # store value into array
+
+addi s0, s0, 4    # move to next array element
+addi t0, t0, 1    # next value
+
+addi t1, t1, -1   # one element completed
+bne t1, zero, LOOP
+```
+
+---
+
+Execution:
+First iteration
+
+```asm
+sw t0, 0(s0)
+```
+
+stores:
+```asm
+memory[1000] = 0
+```
+
+Then:
+```asm
+s0 = 1004
+t0 = 1
+```
+
+---
+
+Second iteration
+
+stores:
+```asm
+memory[1004] = 1
+```
+
+Then:
+```asm
+s0 = 1008
+t0 = 2
+```
+
+---
+
+The process continues until `t1` becomes `0`.
+
+Final memory:
+
+| Address | Value |
+|---|---|
+| 1000 | 0 (`arr[0]`) |
+| 1004 | 1 (`arr[1]`) |
+| 1008 | 2 (`arr[2]`) |
+| 1012 | 3 (`arr[3]`) |
+| 1016 | 4 (`arr[4]`) |
+
+This example shows a very common pattern in assembly:
+
+- one register stores the current value (`t0`)
+- one register points to the current array element (`s0`)
+- one register controls the loop (`t1`)
+- `sw` writes values into memory
+- the address increases by 4 because each integer occupies 4 bytes
+
 ## 5. Program Structure, Directives and System Basics
 
 Extra note:
