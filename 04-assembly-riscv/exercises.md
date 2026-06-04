@@ -12,7 +12,8 @@ Given two integers initialized in memory:
 
 compute the maximum value between them and store it in `max`.
 
-Solution image:
+Solution:
+
 ![ex000](images/ex000.jpeg)
 
 ---
@@ -24,5 +25,8 @@ Given an integer array initialized in memory:
 
 compute the sum of all elements using a loop and store the result in a register.
 
-Solution image:
+Solution:
+
 ![ex001](images/ex001.jpeg)
+
+## 002 - 
