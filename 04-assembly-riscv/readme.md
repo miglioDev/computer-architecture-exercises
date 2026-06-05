@@ -1506,6 +1506,73 @@ So in general:
 srai by n ≈ division by 2ⁿ
 ```
 
+### 5.5 `slli`
+
+`slli` = Shift Left Logical Immediate
+
+This instruction shifts the bits to the left.
+
+Syntax:
+```asm
+slli destination, source, shift_amount
+```
+
+Example:
+```asm
+slli t0, t0, 1
+```
+
+Meaning:
+```asm
+t0 = t0 << 1
+```
+
+A left shift by 1 is similar to:
+```asm
+multiply by 2
+```
+
+Example:
+```asm
+li t0, 5
+
+slli t0, t0, 1
+```
+
+Execution:
+```asm
+5 * 2 = 10
+```
+
+Now:
+```asm
+t0 = 10
+```
+
+Another example:
+```asm
+li t0, 5
+
+slli t0, t0, 2
+```
+
+Execution:
+```asm
+5 * 4 = 20
+```
+
+Because:
+```asm
+left shift by 2 = multiply by 2²
+```
+
+So in general:
+```asm
+slli by n ≈ multiplication by 2ⁿ
+```
+
+---
+
 ## 6. Functions and Procedures in RISC-V
 
 ### 6.1 Types of Routine
