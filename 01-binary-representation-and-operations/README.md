@@ -614,28 +614,58 @@ The ranges differ because the most significant bit is interpreted differently:
 Two’s complement uses all bit patterns efficiently and allows arithmetic operations to be performed without special cases.
 
 ## Question 9:
-Consider the following decimal numbers: -130 and -128.  
-For each number, state whether it can be represented exactly using 8 bits.  
-If it is not representable, write "overflow" and briefly justify why.  
-If it is representable, provide its 8-bit binary representation.  
 
-**Explanation**  
+Consider the following decimal numbers: -130 and -128.
 
-The representable range for signed 8-bit integers in two’s complement is:
-- minimum: -128
-- maximum: +127
+For each number, state whether it can be represented exactly using 8-bit unsigned, sign-magnitude, and two's complement (C2).
+If it is not representable, write **overflow** and briefly justify why.
+If it is representable, provide its 8-bit binary representation.
 
-**Number: -130**  
-- Not representable on 8 bits.
-- Reason: -130 is smaller than the minimum value (-128) allowed by 8-bit two’s complement.
+---
+
+Representable ranges on 8 bits:
+
+- **Unsigned**: 0 to 2^8 - 1 = 255  
+- **Sign-magnitude**: -(2^7 - 1) to +(2^7 - 1) → -127 to +127  
+- **Two's complement (C2)**: -2^7 to 2^7 - 1 → -128 to +127  
+
+Number: -130
+
+**Unsigned**
+- Not representable.
+- Reason: unsigned numbers cannot represent negative values.
 
 Result: **overflow**
 
-**Number: -128**  
-- Representable on 8 bits.
-- It corresponds to the minimum value in 8-bit two’s complement.
-- While with sign and magnitute it is not representable **overflow**
+**Sign-magnitude**
+- Not representable.
+- Reason: -130 is smaller than the minimum representable value (-127).
 
-Binary representation (8 bits):
+Result: **overflow**
+
+**Two's complement (C2)**
+- Not representable.
+- Reason: -130 is smaller than the minimum representable value (-128).
+
+Result: **overflow**
+
+Number: -128
+
+**Unsigned**
+- Not representable, unsigned numbers cannot represent negative values.
+
+Result: **overflow**
+
+**Sign-magnitude**
+- Not representable.
+- Reason: the minimum representable value is -127.
+
+Result: **overflow**
+
+**Two's complement (C2)**
+- Representable.
+- It is the minimum value representable on 8 bits.
+
+Binary representation:
+
 -128 → 10000000
-
