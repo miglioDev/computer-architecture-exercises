@@ -629,7 +629,7 @@ Representable ranges on 8 bits:
 - **Sign-magnitude**: -(2^7 - 1) to +(2^7 - 1) → -127 to +127  
 - **Two's complement (C2)**: -2^7 to 2^7 - 1 → -128 to +127  
 
-Number: -130
+### Number: -130
 
 **Unsigned**
 - Not representable.
@@ -649,7 +649,7 @@ Result: **overflow**
 
 Result: **overflow**
 
-Number: -128
+### Number: -128
 
 **Unsigned**
 - Not representable, unsigned numbers cannot represent negative values.
