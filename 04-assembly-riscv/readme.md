@@ -714,358 +714,160 @@ becomes true, so the loop stops.
 
 ## 4. Memory, Addresses and Arrays
 
-Until now we have mostly used registers, but they're small and limited in number, real programs need much more space for:
-- arrays
-- strings
-- large data structures
+Until now we mostly used registers, but they're small and limited in number. Real programs need more space for arrays, strings, and large data structures, that's what memory (RAM) is for.
 
-That is why understanding memory (RAM) is important.
+Registers hold values directly. Memory instead is accessed through **addresses**: a number that identifies a location in memory.
 
-Registers directly hold values, but memory uses addresses.
-
-An address is the location of data in memory.
+To move data between registers and memory, RISC-V uses **load** instructions (memory → register) and **store** instructions (register → memory).
 
 ---
 
-### 4.1 `lw` — Load Word
+### 4.1 The `offset(base_register)` Format
 
-`lw` = Load Word
+Every load/store instruction uses the same addressing format:
 
-This instruction reads memory into a register.
-
-Syntax:
 ```asm
-lw destination, offset(base_register)
+offset(base_register)
 ```
 
-Example:
+The CPU computes the real address like this:
+
 ```asm
-lw t0, 0(s0)
+address = base_register + offset
 ```
 
-Meaning:
-```asm
-read memory at address:
-s0 + 0
-```
-
-Then copy the result into `t0`.
-
----
-
-**Word Size**
-
-In RV32:
-```asm
-1 word = 4 bytes
-```
-
-So:
-```asm
-lw
-```
-
-loads 4 bytes from memory.
-
----
-
-Example
-
-Suppose:
-```asm
-address 0x3E8 contains value 25
-```
-
-And:
-```asm
-s0 = 0x3E8
-```
-
-Code:
-```asm
-lw t0, 0(s0)
-```
-
-Address calculation:
-```asm
-0x3E8 + 0 = 0x3E8
-```
-
-Memory read:
-```asm
-memory[0x3E8] = 25
-```
-
-Now:
-```asm
-t0 = 25
-```
-
-So `lw` basically means:
-1. go to memory
-2. read data
-3. copy data into a register
-
----
-
-### 4.2 `sw` — Store Word 
-
-`sw` = Store Word
-
-This instruction writes a register value into memory.
-
-Syntax:
-```asm
-sw source, offset(base_register)
-```
-
-Example:
-```asm
-sw t0, 0(s0)
-```
-
-Meaning:
-```asm
-store t0 into memory at:
-s0 + 0
-```
-
----
-
-Example
-
-Suppose:
-```asm
-t0 = 50
-s0 = 1000
-```
-
-Code:
-```asm
-sw t0, 0(s0)
-```
-
-Address calculation:
-```asm
-1000 + 0 = 1000
-```
-
-Store operation:
-```asm
-memory[1000] = 50
-```
-
-Now memory contains:
-```asm
-address 1000 → value 50
-```
-
----
-
-### Direction of Data and Offset
-
-`lw`
-```asm
-memory -> register
-```
-
-`sw`
-```asm
-register -> memory
-```
-
-Registers are used to work with data, while memory is used to store larger amounts of data.
-
----
-
-Understanding the Offset
+`base_register` usually holds a memory address (for example the start of an array), and `offset` is a constant added to it.
 
 Example:
 ```asm
 lw t0, 4(s0)
 ```
+means: read memory at address `s0 + 4`, and put the result in `t0`.
 
-Meaning:
+This format is the same for every load and store instruction below — only the amount of data read/written changes (byte, halfword, or word).
+
+---
+
+### 4.2 `lw` and `sw` — Word Transfers (4 bytes)
+
+In RV32, a **word is 4 bytes**. `lw` and `sw` move a full word.
+
 ```asm
-read from address:
-s0 + 4
-```
-
-The offset is added to the base address.
-
-So:
-- `0(s0)` → first memory position
-- `4(s0)` → next word
-- `8(s0)` → next word again
-
-Because:
-```asm
-1 word = 4 bytes
+lw destination, offset(base_register)   # memory -> register
+sw source, offset(base_register)        # register -> memory
 ```
 
 Example:
 ```asm
-s0 = 1000
+# s0 = 1000, and memory[1000] = 25
+
+lw t0, 0(s0)     # t0 = 25   (read)
+sw t0, 0(s0)     # memory[1000] = t0  (write)
 ```
 
-Then:
+Because a word is 4 bytes, consecutive words are 4 addresses apart:
 ```asm
 0(s0) -> 1000
 4(s0) -> 1004
 8(s0) -> 1008
 ```
 
-This is exactly how arrays are accessed in memory.
+This is exactly how arrays are laid out in memory (see 4.4).
 
 ---
 
-### 4.3 Arrays in Memory
+### 4.3 Byte and Halfword Transfers
 
-Suppose we have (in C):
+Sometimes we don't need a full word — for example a `char` only takes 1 byte. RISC-V provides smaller load/store instructions:
 
+| Instruction | Size | Direction | Notes |
+|---|---|---|---|
+| `lb` | 1 byte | memory → register | sign-extended |
+| `lbu` | 1 byte | memory → register | zero-extended (unsigned) |
+| `lh` | 2 bytes (halfword) | memory → register | sign-extended |
+| `lhu` | 2 bytes (halfword) | memory → register | zero-extended (unsigned) |
+| `sb` | 1 byte | register → memory | writes the low byte only |
+| `sh` | 2 bytes (halfword) | register → memory | writes the low 2 bytes only |
+
+Syntax is identical to `lw`/`sw`:
+```asm
+lb destination, offset(base_register)
+sb source, offset(base_register)
+```
+
+**Why "sign-extended" vs "zero-extended"?**
+
+A register is always 32 bits, but `lb`/`lh` only read 1 or 2 bytes from memory. The CPU must fill the remaining bits somehow:
+
+- `lb` / `lh` → **sign-extended**: the remaining bits are filled with the sign bit (0 if positive, 1 if negative), so the signed value stays correct.
+- `lbu` / `lhu` → **zero-extended**: the remaining bits are always filled with `0`, so the value is treated as unsigned (always positive).
+
+Example — same byte, two different results:
+```asm
+# memory[0(s0)] contains the byte 0xFF (binary 11111111)
+
+lb  t0, 0(s0)     # t0 = 0xFFFFFFFF  -> -1 as signed
+lbu t1, 0(s0)     # t1 = 0x000000FF  ->  255 as unsigned
+```
+
+`lb` extends the sign bit across the whole register, `lbu` just pads with zeros — that's the entire difference.
+
+Store example:
+```asm
+li t0, 65          # ASCII 'A'
+sb t0, 0(s0)       # write only the lowest byte of t0 into memory[s0]
+```
+
+`sb`/`sh` never sign-extend or zero-extend: they only copy the low bits of the register into memory, so there's nothing to fill.
+
+---
+
+### 4.4 Arrays in Memory
+
+Suppose we have, in C:
 ```c
 int arr[3] = {10, 20, 30};
 ```
 
-Each integer in RV32 uses 4 bytes, so in memory it looks like this:
+Each `int` in RV32 is a word (4 bytes), so consecutive elements are 4 bytes apart in memory:
 
 | Address | Value |
 |---|---|
-| 1000 | 10 |  arr[0]
-| 1004 | 20 |  arr[1]
-| 1008 | 30 |  arr[2]
+| 1000 | 10 (`arr[0]`) |
+| 1004 | 20 (`arr[1]`) |
+| 1008 | 30 (`arr[2]`) |
 
-Addresses increase by 4 because each integer is 4 bytes.
-
----
-
-### Base Address
-
-Suppose:
-```asm
-s0 = 1000
-```
-
-This means:
-```asm
-s0 points to arr[0]
-```
-
-So `s0` contains the base address of the array.
-
----
-
-#### 4.3.1 Accessing Arrays
-
-Accessing `arr[0]`
-
-Code:
-```asm
-lw t0, 0(s0)
-```
-
-Address calculation:
-```asm
-1000 + 0 = 1000
-```
-
-Read:
-```asm
-10
-```
-
----
-
-Accessing `arr[1]`
-
-Code:
-```asm
-lw t0, 4(s0)
-```
-
-Address calculation:
-```asm
-1000 + 4 = 1004
-```
-
-Read:
-```asm
-20
-```
-
----
-
-`arr[2]` would be:
-```asm
-lw t0, 8(s0)
-```
-
-Because for integer arrays:
+If `s0 = 1000`, then `s0` is the **base address** of the array — it points to `arr[0]`. Any element can be reached with:
 ```asm
 offset = index * 4
 ```
 
----
-
-#### 4.3.2 Writing into Arrays
-
-Suppose:
 ```asm
-t0 = 99
-s0 = 1000
+lw t0, 0(s0)     # t0 = arr[0] = 10
+lw t0, 4(s0)     # t0 = arr[1] = 20
+lw t0, 8(s0)     # t0 = arr[2] = 30
 ```
 
-Code:
+Writing works the same way:
 ```asm
-sw t0, 4(s0)
+li t0, 99
+sw t0, 4(s0)     # arr[1] = 99
 ```
 
-Address calculation:
-```asm
-1000 + 4 = 1004
-```
-
-This stores:
-```asm
-memory[1004] = 99
-```
-
-Now the array becomes:
-
-| Address | Value |
-|---|---|
-| 1000 | 10 |  arr[0]
-| 1004 | 99 |  arr[1]
-| 1008 | 30 |  arr[2]
-
-We need to keep in mind that:
-```asm
-s0 contains the address of the array,
-not the array value itself
-```
+Remember: `s0` holds the address of the array, not the array itself. For arrays of `char` (1 byte each) the same logic applies with `lb`/`sb` and `offset = index * 1`; for `short` (2 bytes) it's `lh`/`sh` with `offset = index * 2`.
 
 ---
 
-#### 4.3.3 Full example Building an Array with a Loop
+**Example: Building an Array with a Loop**
 
-Suppose we want to create the following array:
+Build `int arr[5] = {0, 1, 2, 3, 4}` starting at `s0 = 1000`:
 
-```c
-int arr[5] = {0, 1, 2, 3, 4};
-```
-
-Assume:
-```asm
-s0 = 1000    # base address of the array
-```
-
-Code:
 ```asm
 li t0, 0      # current value
 li t1, 5      # number of elements
 
 LOOP:
-sw t0, 0(s0)  # store value into array
+sw t0, 0(s0)      # store value into array
 
 addi s0, s0, 4    # move to next array element
 addi t0, t0, 1    # next value
@@ -1074,44 +876,7 @@ addi t1, t1, -1   # one element completed
 bne t1, zero, LOOP
 ```
 
----
-
-Execution:
-First iteration
-
-```asm
-sw t0, 0(s0)
-```
-
-stores:
-```asm
-memory[1000] = 0
-```
-
-Then:
-```asm
-s0 = 1004
-t0 = 1
-```
-
----
-
-Second iteration
-
-stores:
-```asm
-memory[1004] = 1
-```
-
-Then:
-```asm
-s0 = 1008
-t0 = 2
-```
-
----
-
-The process continues until `t1` becomes `0`.
+Each iteration writes one value, then advances `s0` by 4 (next word) and increments `t0` (next value), until `t1` reaches `0`.
 
 Final memory:
 
@@ -1123,13 +888,9 @@ Final memory:
 | 1012 | 3 (`arr[3]`) |
 | 1016 | 4 (`arr[4]`) |
 
-This example shows a very common pattern in assembly:
+This is a common pattern in assembly: one register holds the current value, one register points to the current array element, one register controls the loop, and the store instruction writes into memory while the pointer advances by the element size (4 for a word, 2 for a halfword, 1 for a byte).
 
-- one register stores the current value (`t0`)
-- one register points to the current array element (`s0`)
-- one register controls the loop (`t1`)
-- `sw` writes values into memory
-- the address increases by 4 because each integer occupies 4 bytes
+---
 
 ## 5. Program Structure, Directives and System Basics
 
