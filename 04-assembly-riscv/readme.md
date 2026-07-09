@@ -744,7 +744,7 @@ lw t0, 4(s0)
 ```
 means: read memory at address `s0 + 4`, and put the result in `t0`.
 
-This format is the same for every load and store instruction below — only the amount of data read/written changes (byte, halfword, or word).
+This format is the same for every load and store instruction below, only the amount of data read/written changes (byte, halfword, or word).
 
 ---
 
@@ -778,7 +778,7 @@ This is exactly how arrays are laid out in memory (see 4.4).
 
 ### 4.3 Byte and Halfword Transfers
 
-Sometimes we don't need a full word — for example a `char` only takes 1 byte. RISC-V provides smaller load/store instructions:
+Sometimes we don't need a full word, for example a `char` only takes 1 byte. RISC-V provides smaller load/store instructions:
 
 | Instruction | Size | Direction | Notes |
 |---|---|---|---|
@@ -802,7 +802,7 @@ A register is always 32 bits, but `lb`/`lh` only read 1 or 2 bytes from memory. 
 - `lb` / `lh` → **sign-extended**: the remaining bits are filled with the sign bit (0 if positive, 1 if negative), so the signed value stays correct.
 - `lbu` / `lhu` → **zero-extended**: the remaining bits are always filled with `0`, so the value is treated as unsigned (always positive).
 
-Example — same byte, two different results:
+Example: same byte, two different results:
 ```asm
 # memory[0(s0)] contains the byte 0xFF (binary 11111111)
 
@@ -810,7 +810,7 @@ lb  t0, 0(s0)     # t0 = 0xFFFFFFFF  -> -1 as signed
 lbu t1, 0(s0)     # t1 = 0x000000FF  ->  255 as unsigned
 ```
 
-`lb` extends the sign bit across the whole register, `lbu` just pads with zeros — that's the entire difference.
+`lb` extends the sign bit across the whole register, `lbu` just pads with zeros, that's the entire difference.
 
 Store example:
 ```asm
@@ -837,7 +837,7 @@ Each `int` in RV32 is a word (4 bytes), so consecutive elements are 4 bytes apar
 | 1004 | 20 (`arr[1]`) |
 | 1008 | 30 (`arr[2]`) |
 
-If `s0 = 1000`, then `s0` is the **base address** of the array — it points to `arr[0]`. Any element can be reached with:
+If `s0 = 1000`, then `s0` is the **base address** of the array, it points to `arr[0]`. Any element can be reached with:
 ```asm
 offset = index * 4
 ```
