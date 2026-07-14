@@ -1374,32 +1374,379 @@ because it is the address of the next instruction after the call.
 
 ---
 
-### ABI (Application Binary Interface)
+### 6.2 The ABI (Application Binary Interface)
 
-The ABI is a set of conventions that defines how routines interact with the execution environment in a system.
-
-It establishes rules for:
-- how parameters are passed
-- how values are returned
-- how registers are managed
-- how data is saved in memory
-- how the memory layout is defined
+The ABI is a set of conventions that defines how routines interact with the execution environment: how parameters are passed, how values are returned, how registers are managed, and how the memory layout is organized.
 
 ---
 
-In the RISC-V ILP32 ABI model, parameters are passed through dedicated registers:
+### 6.3 Passing Parameters and Returning Values
+
+In the RISC-V ILP32 ABI, parameters are passed through dedicated registers:
 ```asm
 a0, a1, ..., a7
 ```
 
-So when a function gets called, the first 8 arguments are already stored in these registers in order.
+When a function is called, the first 8 arguments are already stored in these registers, in order.
 
-If the function requires more than 8 arguments:
-- the remaining arguments are placed on the stack
+**Return values** go in `a0`. If the returned value is 64 bits wide, the lower 32 bits go in `a0` and the upper 32 bits go in `a1`.
 
-The caller must:
-- reserve the necessary space on the stack
-- insert the extra parameters in reverse order
-- and only after that perform the routine jump
+---
 
-After the routine returns, the caller is also responsible for restoring the stack to its previous state.
+**More than 8 parameters**
+
+If a function needs more than 8 arguments, the extra ones go on the stack. The caller must:
+1. reserve stack space for the extra parameters (4 bytes each in RV32)
+2. push them in reverse order (last parameter first)
+3. only then jump to the routine
+
+After the call, the caller is also responsible for freeing that stack space again.
+
+Example: `sum10(a, b, c, d, e, f, g, h, i, j)`, returning the sum of all 10 arguments:
+
+```asm
+main:
+li a0, 10       # 1st parameter
+li a1, 20       # 2nd parameter
+li a2, 30       # 3rd parameter
+li a3, 40       # 4th parameter
+li a4, 50       # 5th parameter
+li a5, 60       # 6th parameter
+li a6, 70       # 7th parameter
+li a7, 80       # 8th parameter
+
+addi sp, sp, -8 # reserve stack space for 2 extra parameters (4 bytes each)
+li t1, 100
+sw t1, 4(sp)    # push the 10th parameter
+li t1, 90
+sw t1, 0(sp)    # push the 9th parameter
+
+jal sum10       # call sum10
+addi sp, sp, 8  # deallocate the extra parameters
+ret
+```
+
+Inside the routine, the first 8 arguments are already in `a0-a7`. The remaining ones are read from the stack, in the same order the caller pushed them:
+
+```asm
+sum10:
+lw t1, 0(sp)    # 9th parameter
+lw t2, 4(sp)    # 10th parameter
+
+add a0, a0, a1
+add a0, a0, a2
+add a0, a0, a3
+add a0, a0, a4
+add a0, a0, a5
+add a0, a0, a6
+add a0, a0, a7
+add a0, a0, t1
+add a0, a0, t2   # a0 now holds the total
+ret
+```
+
+The routine never touches `sp` to clean up the extra parameters — freeing that stack space is always the caller's job.
+
+---
+
+### 6.4 Passing by Value vs by Reference
+
+- **By value** → the register/stack slot contains the actual value.
+- **By reference** → the register/stack slot contains a memory address, and the routine reads/writes through that address.
+
+Example in C, by value:
+```c
+int inc(int v) {
+    return v + 1;
+}
+```
+```asm
+inc:
+addi a0, a0, 1    # a0 = a0 + 1
+ret
+```
+
+Same function, by reference:
+```c
+void inc(int* v) {
+    *v = *v + 1;
+}
+```
+```asm
+inc:
+lw a1, 0(a0)      # a1 = *v  (a0 holds an address, not a value)
+addi a1, a1, 1    # a1 = a1 + 1
+sw a1, 0(a0)      # *v = a1
+ret
+```
+
+The difference: with pass-by-value, `a0` already contains the number. With pass-by-reference, `a0` contains the *address* of the number, so the routine must `lw` first to read it, and `sw` to write the result back. The caller doesn't need to read `a0` afterward, the value was already updated directly in memory.
+
+---
+
+### 6.5 Local and Global Variables
+
+**Global variables** live in `.data` and are visible to every routine, exactly like a global variable in C:
+```asm
+.data
+x: .word 0
+
+.text
+main:
+lw a0, x           # read x
+addi a0, a0, 1
+ret
+```
+
+**Local variables** (declared inside a routine, like `tmp` below) should ideally live in registers - registers are much faster than memory.
+```c
+int foo() {
+    int tmp = 5;
+    return tmp + 1;
+}
+```
+```asm
+foo:
+li a0, 5           # tmp = 5
+addi a0, a0, 1     # tmp + 1
+ret
+```
+
+Unlike C, RISC-V has no symbolic names for local variables, only labels and comments to keep track of what a register is being used for. A "local variable" in assembly is really just whatever register you decide to dedicate to it.
+
+**When registers aren't enough**, local data must go on the stack instead:
+- too many local variables to fit in the available registers
+- the variable is an array or a struct (needs more than one word of space)
+- the code needs the *address* of the variable (e.g. to pass it by reference)
+
+The routine is responsible for allocating this space when it starts, and freeing it before it returns, by moving `sp`.
+
+```asm
+foo:
+addi sp, sp, -4     # allocate 4 bytes for tmp
+li t0, 5
+sw t0, 0(sp)        # tmp = 5
+
+lw t1, 0(sp)        # read tmp
+addi t1, t1, 1      # tmp + 1
+
+addi sp, sp, 4      # deallocate tmp
+ret
+```
+
+**Arrays and structs on the stack** follow the same idea, just with more space reserved — one slot per element/field:
+
+```c
+int foo() {
+    int arr[4] = {1, 2, 3, 4};
+    return arr[2];
+}
+```
+```asm
+foo:
+addi sp, sp, -16    # 4 elements * 4 bytes
+
+li t0, 1
+sw t0, 0(sp)        # arr[0] = 1
+li t0, 2
+sw t0, 4(sp)        # arr[1] = 2
+li t0, 3
+sw t0, 8(sp)        # arr[2] = 3
+li t0, 4
+sw t0, 12(sp)       # arr[3] = 4
+
+lw a0, 8(sp)        # return arr[2]
+addi sp, sp, 16     # deallocate
+ret
+```
+
+```c
+struct Point { int x; int y; };
+int foo() {
+    struct Point p = {3, 4};
+    return p.x + p.y;
+}
+```
+```asm
+foo:
+addi sp, sp, -8     # 2 fields * 4 bytes
+
+li t0, 3
+sw t0, 0(sp)        # p.x = 3
+li t0, 4
+sw t0, 4(sp)        # p.y = 4
+
+lw t1, 0(sp)        # p.x
+lw t2, 4(sp)        # p.y
+add a0, t1, t2      # p.x + p.y
+
+addi sp, sp, 8      # deallocate
+ret
+```
+
+---
+
+### 6.6 Caller-Saved vs Callee-Saved Registers
+
+Registers get reused constantly for locals, temporaries, arguments, and return values, so before a routine overwrites one, its previous value might need to be saved somewhere safe first. The ABI decides *who* is responsible for that: the caller, or the callee.
+
+| Register | Alias | Saved by |
+|---|---|---|
+| `x0` | `zero` | — |
+| `x1` | `ra` | caller |
+| `x2` | `sp` | callee |
+| `x3` | `gp` | — |
+| `x4` | `tp` | — |
+| `x5–x7` | `t0–t2` | caller |
+| `x8–x9` | `s0/fp, s1` | callee |
+| `x10–x17` | `a0–a7` | caller |
+| `x18–x27` | `s2–s11` | callee |
+| `x28–x31` | `t3–t6` | caller |
+
+**Caller-saved** (`a0–a7`, `t0–t6`, `ra`): the callee is free to overwrite these without asking permission. If the caller needs their value after the call, the caller must save them before `jal` and restore them after.
+
+```asm
+main:
+addi sp, sp, -12
+sw a0, 0(sp)        # save a0, a1, a2 before the call
+sw a1, 4(sp)
+sw a2, 8(sp)
+
+jal sum              # sum is free to overwrite a0-a2 internally
+
+lw a0, 0(sp)         # restore them afterward
+lw a1, 4(sp)
+lw a2, 8(sp)
+addi sp, sp, 12
+```
+
+Stack access is relatively slow, so in practice only the registers actually needed afterward get saved — not all of them by default.
+
+**Callee-saved** (`s0–s11`, `sp`): the opposite rule. If the callee wants to use these registers, it must save their original value first and restore it before returning, the caller can trust they'll come back unchanged.
+
+```asm
+add:
+addi sp, sp, -16
+sw s0, 0(sp)         # save s0-s3 before using them
+sw s1, 4(sp)
+sw s2, 8(sp)
+sw s3, 12(sp)
+
+add a0, a0, a1        # ... use s0-s3 for something here ...
+
+lw s0, 0(sp)          # restore before returning
+lw s1, 4(sp)
+lw s2, 8(sp)
+lw s3, 12(sp)
+addi sp, sp, 16
+ret
+```
+
+`gp` and `tp` are reserved for global-variable access and thread management — routines should never modify them at all.
+
+---
+
+### 6.7 Why `ra` Must Be Preserved on Nested Calls
+
+`ra` is caller-saved, but there's a case where getting this wrong actually breaks the program: **nested calls**. Every `jal` overwrites `ra` with a new return address, so if a routine calls another routine while it still needs its own return address, it must save `ra` first.
+
+Example: `main` calls `sum2`, and `sum2` calls `sum1` to do part of the work.
+
+```c
+int sum1(int x, int y) { return x + y; }
+int sum2(int a, int b, int c) {
+    int result = sum1(a, b);
+    return result + c;
+}
+```
+```asm
+main:
+li a0, 3
+li a1, 4
+li a2, 5
+jal sum2
+sum2:
+addi sp, sp, -4
+sw ra, 0(sp)        # save ra BEFORE calling sum1, or it gets overwritten
+
+jal sum1            # this call overwrites ra
+
+lw ra, 0(sp)        # restore ra so sum2 can still return to main
+addi sp, sp, 4
+add a0, a0, a2
+ret
+sum1:
+add a0, a0, a1
+ret
+```
+
+Without saving `ra` before `jal sum1`, `sum2` would lose its own return address and end up returning to the wrong place.
+
+The same problem shows up in **recursion**: every recursive call overwrites `ra` again, so each call level must save its own `ra` on the stack before recursing, and restore it right before returning.
+
+```c
+int multiply(int x, int y) {
+    if (y == 0) return 0;
+    return x + multiply(x, y - 1);
+}
+```
+```asm
+multiply:
+addi sp, sp, -4
+sw ra, 0(sp)        # save THIS call's return address
+mv s0, a0           # s0 = x (callee-saved, survives the recursive call)
+
+beq a1, zero, base_case
+addi a1, a1, -1
+jal multiply        # a0 = multiply(x, y-1) -- overwrites ra again
+add a0, a0, s0       # a0 = result + x
+j end
+
+base_case:
+li a0, 0
+
+end:
+lw ra, 0(sp)        # restore THIS call's return address
+addi sp, sp, 4
+ret
+```
+
+Each recursive call has its own stack slot for `ra` (a new one is allocated on every call), so unwinding the recursion returns correctly through every level.
+
+---
+
+### 6.8 Worked Exercises
+
+**Even or odd** return `0` if the input is even, `1` if odd:
+
+```asm
+check_parity:
+andi a0, a0, 1     # keep only the lowest bit: 0 = even, 1 = odd
+ret
+```
+
+The lowest bit of a binary number tells you its parity directly, no branching needed.
+
+---
+
+**Multiplication without `mul`** (RV32I has no multiply instruction), repeated addition:
+
+```asm
+# a0 = factor1, a1 = factor2 -> result in a0
+
+moltiplica:
+li t0, 0             # accumulator
+
+loop_moltiplica:
+beq a1, zero, exit_moltiplica
+add t0, t0, a0        # accumulator += factor1
+addi a1, a1, -1       # one multiplication "step" done
+j loop_moltiplica
+
+exit_moltiplica:
+mv a0, t0
+ret
+```
+
+Execution for `5 * 4`: the loop adds `5` to the accumulator `4` times (`0 → 5 → 10 → 15 → 20`), decrementing `a1` each time until it reaches `0`.
+
